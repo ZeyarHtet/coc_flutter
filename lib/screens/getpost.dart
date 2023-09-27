@@ -1,120 +1,115 @@
 import 'dart:convert';
 
 import 'package:class_on_cloud/model/api.dart';
-import 'package:class_on_cloud/screens/School/createschool.dart';
-import 'package:class_on_cloud/screens/School/edit_school.dart';
+import 'package:class_on_cloud/model/model.dart';
+import 'package:class_on_cloud/screens/classposting.dart';
+import 'package:class_on_cloud/screens/newposting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../model/component.dart';
-import '../../model/constant.dart';
-import '../../model/model.dart';
-import '../drawer.dart';
-import '../home.dart';
+import '../model/component.dart';
+import '../model/constant.dart';
+import 'drawer.dart';
+import 'home.dart';
 
-class SchoolScreen extends StatefulWidget {
-  const SchoolScreen({super.key});
+class GetPostScreen extends StatefulWidget {
+  const GetPostScreen({super.key});
 
   @override
-  State<SchoolScreen> createState() => _SchoolScreenState();
+  State<GetPostScreen> createState() => _GetPostScreenState();
 }
 
-class _SchoolScreenState extends State<SchoolScreen> {
-  List<schoollistmodel> myschool = [];
-  schoollistmodel? selectedschool;
-  bool show = false;
-  bool ready = false;
-  late var result;
+class _GetPostScreenState extends State<GetPostScreen> {
+  bool searchBoolean = false;
 
-  getschool() async {
+  List<classpostlistmodel> myclasspost = [];
+  classpostlistmodel? selectedclasspost;
+  late var result;
+  bool ready = false;
+  classlistmodel? selectedclass;
+
+  getclasspost() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    result = await getschoolapi();
+    var mineclass = prefs.getString('selectedClass');
+    mineclass == null
+        ? selectedclass = null
+        : selectedclass = classlistmodel.singledecode(mineclass);
+    result = await getclasspostapi();
     print('>>>>>>>>>>>>>>>>>>>>>>$result');
-    if (result['returncode'] == '300') {
+    if (result['returnCode'] == '300') {
       setState(() {
-        myschool = [];
+        myclasspost = [];
       });
-    } else if (result['returncode'] == '200') {
-      List schoollist = result['data'];
-      print('>>>>>>>>>>>>>>> school list$schoollist');
-      if (schoollist.isNotEmpty) {
-        for (var i = 0; i < schoollist.length; i++) {
-          myschool.add(
-            schoollistmodel(
-              schoolId: schoollist[i]['school_id'] ?? "",
-              schoolName: schoollist[i]['school_name'] ?? "",
-              adminEmail: schoollist[i]['admin_email'] ?? "",
-              description: schoollist[i]['description'] ?? "",
-              schoolProfilePic: schoollist[i]['school_profile_pic'] ?? "",
-              startDate: schoollist[i]['start_date'] ?? "",
-              endDate: schoollist[i]["end_date"] ?? "",
-              subscriptionPeriod: schoollist[i]['subscription_period'] ?? "",
+    } else if (result['returnCode'] == '200') {
+      List classpostList = result['posts'];
+      print('>>>>>>>>>>>>>>> classpostlist$classpostList');
+      if (classpostList.isNotEmpty) {
+        for (var i = 0; i < classpostList.length; i++) {
+          myclasspost.add(
+            classpostlistmodel(
+              postId: classpostList[i]['post_id'] ?? "",
+              classId: classpostList[i]['class_id'] ?? "",
+              title: classpostList[i]['title'] ?? "",
+              type: classpostList[i]['type'].toString(),
+              duedate: classpostList[i]['due_date'] ?? "",
             ),
           );
-          // print(">>>>>>>> ${myclass[0].coverpic}");
         }
+        print(">>>>>>>>>>>>> class length ${myclasspost.length}");
 
-        String encodedschool = schoollistmodel.encode   (myschool);
-        await prefs.setString('schoolList', encodedschool);
+        String encodedclasspost = classpostlistmodel.encode(myclasspost);
+        await prefs.setString('classpostList', encodedclasspost);
       }
     }
 
-    var mineschool = prefs.getString('selectedSchool');
-    mineschool == null
-        ? selectedschool = null
-        : selectedschool = schoollistmodel.singledecode(mineschool);
+    var mineclasspost = prefs.getString('selectedclassPost');
+    mineclasspost == null
+        ? selectedclasspost = null
+        : selectedclasspost = classpostlistmodel.singledecode(mineclasspost);
     setState(() {
       ready = true;
     });
   }
 
-  deleteschool(String schoolid) async {
+  delectedclasspost(String postid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    result = await deleteschoolapi(schoolid);
+    result = await deleteclasspostapi(postid);
 
-    print('>><><><>< before>>${myschool.length}');
-    if (schoolid == selectedschool?.schoolId) {
+    print('>><><><>< before>>${myclasspost.length}');
+    if (postid == selectedclasspost?.postId) {
       var removedData =
-          myschool.removeWhere((element) => element.schoolId == schoolid);
+          myclasspost.removeWhere((element) => element.postId == postid);
 
-      print('>><><><>< ${myschool.length}');
-      if (myschool.isEmpty) {
-        var addinnull = await prefs.remove('selectedSchool');
+      print('>><><><>< ${myclasspost.length}');
+      if (myclasspost.isEmpty) {
+        var addinnull = await prefs.remove('selectedClass');
         print('><><>>>>>Nulling $addinnull');
       } else {
-        String selectedencode = schoollistmodel.sigleencode(myschool[0]);
-        await prefs.setString("selectedSchool", selectedencode);
-        // await prefs.setStringList('classdata', [
-        //   myclass[0].classId,
-        //   myclass[0].title,
-        //   myclass[0].subtitle,
-        //   myclass[0].schoolId ?? 'N',
-        //   myclass[0].privateId ?? 'N',
-        //   myclass[0].description ?? "N",
-        //   myclass[0].picUrl ?? 'N'
-        // ]);
+        String selectedencode = classpostlistmodel.sigleencode(myclasspost[0]);
+        await prefs.setString("selectedclasspost", selectedencode);
       }
     }
-    if (result['returncode'] == '200') {
+    if (result['returnCode'] == '200') {
       Navigator.pop(context);
       showToast('successfully deleted', 'darkmain');
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const SchoolScreen()),
+          MaterialPageRoute(builder: (context) => const GetPostScreen()),
           (route) => false);
     } else {
       Navigator.pop(context);
-      showToast('${result['returncode']}', 'red');
+      showToast('${result['returnCode']}', 'red');
     }
     setState(() {});
   }
 
   @override
   void initState() {
-    getschool();
+    getclasspost();
     super.initState();
   }
 
@@ -130,18 +125,21 @@ class _SchoolScreenState extends State<SchoolScreen> {
           color: maincolor,
           size: 30,
         ),
-        title: Text("School", style: appbarTextStyle(maincolor)),
+        title: Text("Post", style: appbarTextStyle(maincolor)),
       ),
-      drawer: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: DrawerScreen(
-            pagename: 'School',
-          )),
+
+      drawer: searchBoolean
+          ? null
+          : SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: DrawerScreen(
+                pagename: selectedclass == null ? 'Home' : selectedclass!.title,
+              )),
       body: ready
-          ? myschool.isEmpty
+          ? myclasspost.isEmpty
               ? Center(
                   child: Text(
-                    "You don't have any class yet!",
+                    "You don't have any post yet!",
                     style: inputTextStyle,
                   ),
                 )
@@ -151,7 +149,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
-                          itemCount: myschool.length,
+                          itemCount: myclasspost.length,
                           itemBuilder: (context, i) {
                             return Slidable(
                               endActionPane: ActionPane(
@@ -164,30 +162,22 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                         setState(() {
                                           print(">>>>> my data");
                                           var mydata = jsonEncode({
-                                            "school_id": myschool[i].schoolId,
-                                            "school_name":
-                                                myschool[i].schoolName,
-                                            "admin_email":
-                                                myschool[i].adminEmail,
-                                            "description":
-                                                myschool[i].description,
-                                            "school_profile_pic":
-                                                myschool[i].schoolProfilePic,
-                                            "start_date": myschool[i].startDate,
-                                            "subscription_period":
-                                                myschool[i].subscriptionPeriod,
-                                            "end_date": myschool[i].endDate,
+                                            "post_id": myclasspost[i].postId,
+                                            "class_id": myclasspost[i].classId,
+                                            "title": myclasspost[i].title,
+                                            "type": myclasspost[i].type,
+                                            "due_date": myclasspost[i].duedate,
                                           });
                                           print(">>>>> my data");
                                           print(mydata);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => EditSchool(
-                                                editData: mydata,
-                                              ),
-                                            ),
-                                          );
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //     builder: (context) => EditSchool(
+                                          //       editData: mydata,
+                                          //     ),
+                                          //   ),
+                                          // );
                                         });
                                       },
                                       // borderRadius:
@@ -247,11 +237,11 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  myschool[i].schoolId ==
-                                                          selectedschool
-                                                              ?.schoolId
+                                                  myclasspost[i].postId ==
+                                                          selectedclasspost
+                                                              ?.postId
                                                       ? Text(
-                                                          "You have been viewing this class! Do you want to delete?",
+                                                          "You have been viewing this post! Do you want to delete?",
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .redAccent,
@@ -264,7 +254,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                                                       .w500),
                                                         )
                                                       : Text(
-                                                          "Are You sure to delete this class?",
+                                                          "Are You sure to delete this post?",
                                                           style: TextStyle(
                                                               color: seccolor,
                                                               fontSize:
@@ -310,10 +300,9 @@ class _SchoolScreenState extends State<SchoolScreen> {
 
                                                           // showLoadingDialog(
                                                           //     context);
-                                                          await deleteschool(
-                                                              myschool[i]
-                                                                  .schoolId);
-                                                          // ignore: use_build_context_synchronously
+                                                          await delectedclasspost(
+                                                              myclasspost[i]
+                                                                  .postId);
                                                         },
                                                         child: Text(
                                                           'Confirm',
@@ -336,7 +325,6 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                           },
                                         );
                                       },
-                                     
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -373,8 +361,8 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                   ),
                                 ],
                               ),
-                              child: SchoolModel(
-                                eachschool: myschool[i],
+                              child: ClassPostModel(
+                                eachclasspost: myclasspost[i],
                               ),
                             );
                           })),
@@ -385,30 +373,44 @@ class _SchoolScreenState extends State<SchoolScreen> {
                 size: 50,
               ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
+      // floatingActionButton: FloatingActionButton.extended(
+      //   backgroundColor: darkmain,
+      //   onPressed: () {
+      //     Navigator.push(context,
+      //         MaterialPageRoute(builder: (context) => PostingScreen()));
+      //   },
+      //   label: const Text('Add'),
+      //   icon: const Icon(Icons.add),
+      // ),
+      floatingActionButton: FloatingActionButton(
         backgroundColor: darkmain,
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const CreateSchool()));
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: PostingScreen(
+                    selectedclass: selectedclass!,
+                  )));
         },
-        label: const Text('Add'),
-        icon: const Icon(Icons.add),
+        child: const Icon(Icons.add, size: 30),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
 
-class SchoolModel extends StatefulWidget {
-  schoollistmodel eachschool;
+class ClassPostModel extends StatefulWidget {
+  classpostlistmodel eachclasspost;
   // String classname;
-  SchoolModel({super.key, required this.eachschool});
+  ClassPostModel({super.key, required this.eachclasspost});
 
   @override
-  State<SchoolModel> createState() => _SchoolModelState();
+  State<ClassPostModel> createState() => _ClassPostModelState();
 }
 
-class _SchoolModelState extends State<SchoolModel> {
-  List<studentlistinClass> studentlist = [];
+class _ClassPostModelState extends State<ClassPostModel> {
+  // List<studentlistinClass> studentlist = [];
 
   @override
   Widget build(BuildContext context) {
@@ -427,7 +429,7 @@ class _SchoolModelState extends State<SchoolModel> {
                   backgroundColor: paledarkmain,
                   radius: 25,
                   child: Text(
-                    widget.eachschool.schoolName[0].toUpperCase(),
+                    widget.eachclasspost.title[0].toUpperCase(),
                     style: buttonTextStyle,
                   )),
               const SizedBox(
@@ -437,10 +439,10 @@ class _SchoolModelState extends State<SchoolModel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('${widget.eachschool.schoolName.characters.take(36)}',
+                  Text('${widget.eachclasspost.title.characters.take(36)}',
                       style: firstTextstyle),
                   Text(
-                    widget.eachschool.startDate,
+                    widget.eachclasspost.duedate,
                     style: secondTextstyle(Colors.grey[600]),
                   ),
                 ],

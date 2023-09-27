@@ -3,6 +3,7 @@ import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/component.dart';
 import 'package:class_on_cloud/model/model.dart';
 import 'package:class_on_cloud/screens/drawer.dart';
+import 'package:class_on_cloud/screens/getpost.dart';
 import 'package:class_on_cloud/screens/journal.dart';
 import 'package:class_on_cloud/screens/massage.dart';
 import 'package:class_on_cloud/screens/progress.dart';
@@ -100,7 +101,8 @@ class _NavbarScreenState extends State<NavbarScreen> {
 
   bool searchBoolean = false;
   List<Widget> screens = [
-    JournelScreen(),
+    // JournelScreen(),
+    GetPostScreen(),
     MessageScreen(),
     StudentScreen(),
     ProgressScreen()

@@ -16,10 +16,19 @@ class ProgressScreen extends StatefulWidget {
 class _ProgressScreenState extends State<ProgressScreen> {
   final TextEditingController startdateController = TextEditingController();
   DateTime? picked;
+  List progressList = [
+    {
+      "id": "1",
+      "assignment_one": "blahblah",
+      "assignment_two": "test",
+      "assignment_three": "assignment_three",
+    }
+  ];
   double tableHeight = 60;
-  double assone = 100;
-  double asstwo = 200;
-  double assthree = 200;
+  double idWidth = 50;
+  double assoneWidth = 110;
+  double asstwoWidth = 110;
+  double assthreeWidth = 110;
 
   tableHeaderWidget(context, width, name) {
     return Container(
@@ -146,60 +155,124 @@ class _ProgressScreenState extends State<ProgressScreen> {
           pagename: 'Progress',
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            TextFormField(
-              onTap: () {
-                setState(() {
-                  _pickDateDialog();
-                });
-              },
-              keyboardType: TextInputType.name,
-              decoration: const InputDecoration(
-                filled: true,
-                fillColor: Color.fromARGB(255, 208, 205, 205),
-                label: Icon(Icons.date_range),
-              ),
-              controller: startdateController,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
-              child: Center(
-                child: ListView(
-                   shrinkWrap: false, // all devices, use MediaQuery
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
+      // body: Column(
+      //   children: [
+      //     TextFormField(
+      //       onTap: () {
+      //         setState(() {
+      //           _pickDateDialog();
+      //         });
+      //       },
+      //       keyboardType: TextInputType.name,
+      //       decoration: const InputDecoration(
+      //         filled: true,
+      //         fillColor: Color.fromARGB(255, 208, 205, 205),
+      //         label: Icon(Icons.date_range),
+      //       ),
+      //       controller: startdateController,
+      //     ),
+      //     const SizedBox(
+      //       height: 20,
+      //     ),
+      //     Padding(
+      //       padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
+      //       child: Center(
+      //         child: ListView(
+      //           shrinkWrap: true,
+      //           scrollDirection: Axis.horizontal,
+      //           physics: const BouncingScrollPhysics(),
+      //           children: [
+      //             SingleChildScrollView(
+      //               child: Column(
+      //                 children: [
+      //                   Row(
+      //                     children: [
+      //                       tableHeaderWidget(context, idWidth, "Id"),
+      //                       tableHeaderWidget(
+      //                           context, assoneWidth, "Assignment 1"),
+      //                       tableHeaderWidget(
+      //                           context, assthreeWidth, "Assignment 2"),
+      //                       tableHeaderWidget(
+      //                           context, assthreeWidth, "Assignment 3"),
+      //                     ],
+      //                   ),
+      //                 ],
+      //               ),
+      //             )
+      //           ],
+      //         ),
+      //       ),
+      //     )
+      //   ],
+      // ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
                       children: [
-                       SingleChildScrollView(
-                        child: Column(
-                          children: [
-                           Row(
-                                children: [
-                                  ////id
-                                  tableHeaderWidget(context, assone, "Assignment 1"),
-
-                                  //// name
-                                  tableHeaderWidget(context, asstwo, "Assignment 2"),
-                                  //// No
-
-                                  tableHeaderWidget(context, assthree, "Assignment 3"),
-
-                                  ///actionbutton
-                                 
-                                ],
-                              ),
-                          ],
-                        ),
-                       )
+                        tableHeaderWidget(context, idWidth, "Id"),
+                        tableHeaderWidget(context, assoneWidth, "Assignment1"),
+                        tableHeaderWidget(
+                            context, assthreeWidth, "Assignment2"),
+                        tableHeaderWidget(
+                            context, assthreeWidth, "Assignment3"),
                       ],
+                    ),
+                    SizedBox(
+                      width:
+                          idWidth + assoneWidth + asstwoWidth + assthreeWidth,
+                      child: Container(
+                        height: (progressList.length * tableHeight),
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: progressList.length,
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int i) {
+                              return Row(
+                                children: [
+                                  tableFormWidget(
+                                    context,
+                                    idWidth,
+                                    progressList[i]["id"],
+                                    0,
+                                  ),
+                                  tableFormWidget(
+                                    context,
+                                    assoneWidth,
+                                    progressList[i]["assignment_one"],
+                                    1,
+                                  ),
+                                  tableFormWidget(
+                                    context,
+                                    asstwoWidth,
+                                    progressList[i]["assignment_two"],
+                                    2,
+                                  ),
+                                  tableFormWidget(
+                                    context,
+                                    assthreeWidth,
+                                    progressList[i]["assignment_three"],
+                                    3,
+                                  ),
+                                ],
+                              );
+                            }),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

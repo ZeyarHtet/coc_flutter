@@ -3,6 +3,7 @@ import 'package:class_on_cloud/model/component.dart';
 import 'package:class_on_cloud/model/constant.dart';
 import 'package:class_on_cloud/model/model.dart';
 import 'package:class_on_cloud/screens/createpost.dart';
+import 'package:class_on_cloud/screens/getpost.dart';
 import 'package:class_on_cloud/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class PostingScreen extends StatefulWidget {
   classlistmodel selectedclass;
@@ -24,15 +26,17 @@ class _PostingScreenState extends State<PostingScreen> {
   // List<FocusNode> nodes = [FocusNode()];
   List<Eachpost> postlist = [];
   List<TextEditingController> contentcons = [];
-  TextEditingController titletext = TextEditingController();
-  TextEditingController codetext = TextEditingController();
+  TextEditingController titletextcontroller = TextEditingController();
+  TextEditingController codetextcontroller = TextEditingController();
+  TextEditingController duedatecontroller = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  DateTime? picked;
   int focind = 1;
-
   bool floatingshow = false;
   bool havetitle = false;
   bool submitted = false;
+  bool getloading = false;
 
   final ImagePicker _picker = ImagePicker();
   // List<List<XFile>> galaryimagelist = [];
@@ -134,10 +138,10 @@ class _PostingScreenState extends State<PostingScreen> {
           controller: contentcons.last,
           hinttext: 'New TextField Here',
           deletefun: () {
-              setState(() {
-                postlist.removeWhere((element) => element.id == index);
-              });
-            },
+            setState(() {
+              postlist.removeWhere((element) => element.id == index);
+            });
+          },
         ),
       ),
     );
@@ -188,7 +192,7 @@ class _PostingScreenState extends State<PostingScreen> {
       Map<String, dynamic> valuestosent = {
         "email": email,
         "class_id": widget.selectedclass.classId,
-        "title": titletext.text.trim(),
+        "title": titletextcontroller.text.trim(),
         "type": 1,
         "post_details": valuelist
       };
@@ -229,9 +233,11 @@ class _PostingScreenState extends State<PostingScreen> {
 
   @override
   void initState() {
-    titletext.addListener(() {
+    titletextcontroller.addListener(() {
       setState(() {
-        titletext.text.isNotEmpty ? havetitle = true : havetitle = false;
+        titletextcontroller.text.isNotEmpty
+            ? havetitle = true
+            : havetitle = false;
       });
     });
     // setData();
@@ -267,9 +273,38 @@ class _PostingScreenState extends State<PostingScreen> {
           actions: [
             GestureDetector(
               onTap: () async {
-                if (_formKey.currentState!.validate() && havetitle == true) {
-                  await postBlog(postlist);
+                setState(() {
+                  submitted = true;
+                });
+                // if (key.currentState!.validate()) {
+                print(">>>>>>>>");
+                setState(() {
+                  getloading = true;
+                });
+                var returncode = await createpostapi(
+                    widget.selectedclass.classId,
+                    titletextcontroller.text,
+                    [],
+                    duedatecontroller.text);
+                print('><><ret><> $returncode');
+                if (returncode == '200') {
+                  print("<<<<<<<x<<<<<<<<object1>>>>>>>>>>>>>>>");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GetPostScreen()),
+                  );
+                  titletextcontroller.clear();
+                  duedatecontroller.clear;
+
+                  print("<<<<<<<<<<<<<<<object>>>>>>>>>>>>>>>");
                 }
+                setState(() {
+                  getloading = false;
+                  submitted = false;
+                });
+                print('>>>>>><<<<<<>>>>>>>');
+                // }
               },
               child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 6, 5, 6),
@@ -297,29 +332,80 @@ class _PostingScreenState extends State<PostingScreen> {
             children: [
               Column(
                 children: [
-                  TextFormField(
-                    controller: titletext,
-                    maxLines: 4,
-                    minLines: 1,
-                    validator: RequiredValidator(
-                        errorText: 'Title is required to post'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 8),
-                      filled: true,
-                      fillColor: backcolor,
-                      hintText: "Title",
-                      hintStyle: labelTextStyle,
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: TextFormField(
+                      controller: titletextcontroller,
+                      maxLines: 4,
+                      minLines: 1,
+                      validator: RequiredValidator(
+                          errorText: 'Title is required to post'),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 5.0, horizontal: 8),
+                        filled: true,
+                        fillColor: backcolor,
+                        hintText: "Title",
+                        hintStyle: labelTextStyle,
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          borderSide: BorderSide.none,
                         ),
-                        borderSide: BorderSide.none,
                       ),
+                      style: labelTextStyle,
+                      cursorColor: seccolor,
                     ),
-                    style: labelTextStyle,
-                    cursorColor: seccolor,
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text(
+                          'Due Date',
+                          style: labelTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        right: 15, bottom: 10, left: 15, top: 10),
+                    child: TextFormField(
+                      onTap: () {
+                        setState(() {
+                          _pickDateDialog();
+                        });
+                      },
+                      controller: duedatecontroller,
+                      autofocus: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.words,
+                      autovalidateMode: submitted
+                          ? AutovalidateMode.always
+                          : AutovalidateMode.disabled,
+                      validator: RequiredValidator(
+                          errorText: "Due Date cannot be blank !"),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(15.0),
+                        filled: true,
+                        fillColor: Colors.white,
+                        // hintText: 'Enter your email address',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      // style: labelTextStyle,
+                      // cursorColor: seccolor,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
 
                   // SizedBox(
@@ -424,7 +510,7 @@ class _PostingScreenState extends State<PostingScreen> {
                                   floatingshow ? seccolor : darkmain,
                               child: Icon(
                                 floatingshow
-                                    ? Icons.arrow_forward_ios
+                                    ? Icons.arrow_back_ios
                                     : Icons.add_photo_alternate_outlined,
                                 color: Colors.white,
                                 size: 18,
@@ -543,7 +629,18 @@ class _PostingScreenState extends State<PostingScreen> {
     );
   }
 
-  // codeWidget(index) {
-  //   return
-  // }
+  void _pickDateDialog() async {
+    picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1000),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        // _start_dateController.text = '${picked!.year} - ${picked!.month} ${picked!.day}';
+        duedatecontroller.text = DateFormat('yyyy-MM-dd').format(picked!);
+      });
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:class_on_cloud/screens/classposting.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
@@ -298,6 +299,58 @@ class EachGetpost {
         "updatedAt": updatedAt.toIso8601String(),
         "post_details": List<dynamic>.from(postDetails.map((x) => x.toJson())),
       };
+}
+
+class classpostlistmodel {
+  String postId;
+  String classId;
+  String title;
+  String type;
+  String duedate;
+
+  classpostlistmodel({
+    required this.postId,
+    required this.classId,
+    required this.title,
+    required this.type,
+    required this.duedate,
+  });
+
+  factory classpostlistmodel.fromJson(Map<String, dynamic> jsonData) {
+    return classpostlistmodel(
+      postId: jsonData['post_id'],
+      classId: jsonData['class_id'],
+      title: jsonData['title'],
+      type: jsonData['type'],
+      duedate: jsonData['due_date'],
+    );
+  }
+
+  static Map<String, dynamic> toMap(classpostlistmodel classpost) => {
+        "post_id": classpost.postId,
+        "class_id": classpost.classId,
+        "title": classpost.title,
+        "type": classpost.type,
+        "due_date": classpost.duedate
+      };
+
+  static String encode(List<classpostlistmodel> classes) => json.encode(
+        classes
+            .map<Map<String, dynamic>>(
+                (eachclass) => classpostlistmodel.toMap(eachclass))
+            .toList(),
+      );
+
+  static List<classpostlistmodel> decode(String classes) =>
+      (json.decode(classes) as List<dynamic>)
+          .map<classpostlistmodel>(
+              (eachclass) => classpostlistmodel.fromJson(eachclass))
+          .toList();
+
+  static String sigleencode(classpostlistmodel single) =>
+      json.encode(classpostlistmodel.toMap(single));
+  static classpostlistmodel singledecode(dynamic single) =>
+      classpostlistmodel.fromJson(json.decode(single));
 }
 
 class PostDetail {

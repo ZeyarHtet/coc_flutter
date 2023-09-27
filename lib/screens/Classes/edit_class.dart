@@ -84,6 +84,13 @@ class _EditClassState extends State<EditClass> {
           print(">>>>>>>>>> cover pic $coverPic");
         }
       }
+
+        // _schoolemailController.text = editData["admin_email"] ?? '';
+        // _schoolnameController.text = editData["school_name"] ?? '';
+        // _start_dateController.text = editData["start_date"] ?? '';
+        // _end_dateController.text = editData["end_date"] ?? '';
+        // _perioddateController.text = editData["subscription_period"] ?? '';
+
     });
   }
 

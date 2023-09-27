@@ -50,19 +50,8 @@ class _JournelScreenState extends State<JournelScreen> {
       var result = await getPostApi(selectedclass!.classId);
       print('${result['posts']}');
       List posts = result["posts"];
-
-      for (var eachpost in posts) {
-        EachGetpost eaachone = EachGetpost.fromJson(eachpost);
-        allpost.add(eaachone);
-        var image = getimage(eaachone.postDetails);
-        var date = postsdatechange(eaachone.createdAt);
-        blogss.add(blogpostCompo(
-            firstcontext: eaachone.postDetails[0].content,
-            title: eaachone.title,
-            imagepath: image,
-            createdate: date));
-      }
     }
+    print(">>>>>>>>>>>>> typesadof");
 
     setState(() {
       isready = true;

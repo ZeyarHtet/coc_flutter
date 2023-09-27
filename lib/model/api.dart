@@ -48,10 +48,23 @@ refreshToken() async {
   return result;
 }
 
-createclassapi(String classname, String gradename) async {
+createclassapi(
+  String title,
+  String subtitle,
+  String description,
+  // String school,
+) async {
   var url = "$domain/api/teacher/createclass";
   // SharedPreferences prefs = await SharedPreferences.getInstance();
-  var params = {"email": email, "title": classname, "subtitle": gradename};
+  var params = {
+    "email": email,
+    "title": title,
+    "description": description,
+    "subtitle": subtitle,
+    // "school_id": school,
+    // "cover_pic": coverpic,
+    "is_active": true
+  };
   try {
     Response res = await dio.post(
       url,
@@ -84,7 +97,11 @@ createclassapi(String classname, String gradename) async {
       var refreshresult = await refreshToken();
       if (refreshresult['returncode'] == '200') {
         await Future.delayed(const Duration(seconds: 2));
-        createclassapi(classname, gradename);
+        createclassapi(
+          title,
+          description,
+          subtitle,
+        );
       }
       print('><><><><tokres ${refreshresult['returncode']} ');
     }
@@ -951,6 +968,143 @@ editschoolapi(
     showToast(e.toString(), 'red');
   }
 }
+
+ createpostapi(String classid, String title, List postdetails, String dudedate
+    // String school,
+    ) async {
+  var url = "$domain/api/post/createPost";
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  var params = {
+    "email": email,
+    "class_id": classid,
+    "title": title,
+    "type": 1,
+    "post_details": postdetails,
+    "due_date": dudedate,
+  };
+  print(">>>>>>>>>>>>> post body $params");
+  try {
+    Response res = await dio.post(
+      url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      }),
+      data: jsonEncode(params),
+    );
+    var result = res.data;
+    // print('>><?><>><< ${result['returncode']}');
+    if (result['returnCode'] == '200') {
+      print(">>>>>> res returncode ${result['returnCode']}");
+      return result['returnCode'].toString();
+    }
+    // else if (res.statusCode == 401) {
+    //   var refreshresult = await refreshToken();
+    //   if (refreshresult['returncode'] == '200') {
+    //     await Future.delayed(const Duration(seconds: 2));
+    //     createclassapi(classname, gradename);
+    //   }
+    //   print('><><><><tokres ${refreshresult['returncode']} ');
+    // } else {
+    //   showToast(result['returncode'], 'darkmain');
+    // }
+  } on DioError catch (err) {
+    print('dioerror >>>  ${err.response!.data["returnCode"]}');
+    var errres = err.response!.data;
+    if (errres['returnCode'] == '301') {
+      var refreshresult = await refreshToken();
+      if (refreshresult['returnCode'] == '200') {
+        await Future.delayed(const Duration(seconds: 2));
+        createpostapi(classid, title, postdetails, dudedate);
+      }
+      print('><><><><tokres ${refreshresult['returnCode']} ');
+    }
+  } catch (e) {
+    showToast(e.toString(), 'red');
+  }
+}
+
+getclasspostapi() async {
+  var url = "$domain/api/post/getPosts";
+  try {
+    var params = {
+      "email": email,
+    };
+    var res = await dio.post(
+      url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      }),
+      data: jsonEncode(params),
+    );
+    print('>><?><>><< ${res.data}');
+
+    var result = res.data;
+    return result;
+  } on DioError catch (err) {
+    print('dioerror >>>  ${err.response!.data["returncode"]}');
+    var errres = err.response!.data;
+    if (errres['returncode'] == '301') {
+      var refreshresult = await refreshToken();
+      if (refreshresult['returncode'] == '200') {
+        await Future.delayed(const Duration(seconds: 2));
+        getschoolapi();
+      }
+      print('><><><><tokres ${refreshresult['returncode']} ');
+    }
+  } catch (e) {
+    showToast(e.toString(), 'red');
+    print("geterror >>>> $e");
+  }
+}
+
+deleteclasspostapi(String postid) async {
+  var url = "$domain/api/post/deletePost";
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  try {
+    var params = {"email": email, "post_id": postid};
+    Response res = await dio.post(
+      url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      }),
+      data: jsonEncode(params),
+    );
+    var result = res.data;
+    // print('>><?><>><< ${result['returncode']}');
+    // if (result['returncode'] == '200') {
+    //   // showToast('Arrived', "darkmain");
+    //   return result;
+    // } else if (res.statusCode == 401) {
+    //   var refreshresult = await refreshToken();
+    //   if (refreshresult['returncode'] == '200') {
+    //     await Future.delayed(const Duration(seconds: 2));
+    //     deleteclassapi(classid);
+    //   }
+    //   print('><><><><tokres ${refreshresult['returncode']} ');
+    // } else {
+    //   showToast(result['returncode'], 'darkmain');
+    // }
+
+    return result;
+  } on DioError catch (err) {
+    print('dioerror >>>  ${err.response!.data["returncode"]}');
+    var errres = err.response!.data;
+    if (errres['returncode'] == '301') {
+      var refreshresult = await refreshToken();
+      if (refreshresult['returncode'] == '200') {
+        await Future.delayed(const Duration(seconds: 2));
+        deleteschoolapi(postid);
+      }
+      print('><><><><tokres ${refreshresult['returncode']} ');
+    }
+  } catch (e) {
+    showToast(e.toString(), 'red');
+  }
+}
+
 
 // userprofileupdate(
 //       // username,
