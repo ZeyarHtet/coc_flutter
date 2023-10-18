@@ -6,7 +6,6 @@ import 'package:class_on_cloud/model/model.dart';
 import 'package:class_on_cloud/screens/blogdetail.dart';
 import 'package:class_on_cloud/screens/createpost.dart';
 import 'package:class_on_cloud/screens/drawer.dart';
-import 'package:class_on_cloud/screens/newposting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -14,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Posts/createpost.dart';
 
 class JournelScreen extends StatefulWidget {
   const JournelScreen({super.key});

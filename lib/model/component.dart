@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -554,6 +555,7 @@ class Newimagecontainerwithcaption extends StatefulWidget {
 
 class _NewimagecontainerwithcaptionState
     extends State<Newimagecontainerwithcaption> {
+  bool isWeb = GetPlatform.isWeb;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -589,11 +591,17 @@ class _NewimagecontainerwithcaptionState
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(4.0),
-                child: Image.file(
-                  io.File(widget.imagepath.path),
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
+                child: isWeb
+                    ? Image.network(
+                        widget.imagepath.path,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.file(
+                        io.File(widget.imagepath.path),
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Positioned(
                 right: 0.2,

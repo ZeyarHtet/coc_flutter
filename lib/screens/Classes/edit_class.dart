@@ -80,17 +80,16 @@ class _EditClassState extends State<EditClass> {
         customgradecontroller.text = editData["subtitle"] ?? '';
         if (editData["cover_pic"] != "") {
           coverPic =
-              "$miniohttp/coc/post_images/scaled_IMG_20230831_143105_1693888986534.jpg";
+              "$miniohttp/coc/class_coverPic/scaled_Jennie-1697097272750.jpg";
           print(">>>>>>>>>> cover pic $coverPic");
         }
       }
 
-        // _schoolemailController.text = editData["admin_email"] ?? '';
-        // _schoolnameController.text = editData["school_name"] ?? '';
-        // _start_dateController.text = editData["start_date"] ?? '';
-        // _end_dateController.text = editData["end_date"] ?? '';
-        // _perioddateController.text = editData["subscription_period"] ?? '';
-
+      // _schoolemailController.text = editData["admin_email"] ?? '';
+      // _schoolnameController.text = editData["school_name"] ?? '';
+      // _start_dateController.text = editData["start_date"] ?? '';
+      // _end_dateController.text = editData["end_date"] ?? '';
+      // _perioddateController.text = editData["subscription_period"] ?? '';
     });
   }
 

@@ -190,8 +190,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                           );
                                         });
                                       },
-                                      // borderRadius:
-                                      //     BorderRadius.circular(16),
+                                    
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,

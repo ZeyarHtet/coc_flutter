@@ -36,24 +36,9 @@ class _ClassesScreenState extends State<ClassesScreen> {
 
   List<classlistmodel> myclass = [];
   classlistmodel? selectedclass;
-
   bool show = false;
   bool ready = false;
   late var result;
-  List<String> dropdownlist = [
-    'KG',
-    'Grade 1',
-    'Grade 2',
-    'Grade 3',
-    'Grade 4',
-    'Grade 5',
-    'Grade 6',
-    'Grade 7',
-    'Grade 8',
-    'Grade 9',
-    'Grade 10',
-    'Grade 11'
-  ];
 
   getclass() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -201,36 +186,6 @@ class _ClassesScreenState extends State<ClassesScreen> {
                                 motion: const DrawerMotion(),
                                 children: [
                                   Expanded(
-                                    //  InkWell(
-                                    //                 onTap: (() {
-                                    //                   setState(() {
-                                    //                     Navigator.push(
-                                    //                       context,
-                                    //                       MaterialPageRoute(
-                                    //                         builder: (context) =>
-                                    //                             EditCategory(
-                                    //                           editData:
-                                    //                               categoryList[
-                                    //                                   i],
-                                    //                         ),
-                                    //                       ),
-                                    //                     );
-                                    //                   });
-                                    //                 }),
-                                    //                 child: Container(
-                                    //                   height: 50,
-                                    //                   width: 50,
-                                    //                   color: Colors.blue,
-                                    //                   child: const Icon(
-                                    //                     Icons.edit,
-                                    //                     size: 15,
-                                    //                     color: Colors.white,
-                                    //                   ),
-                                    //                 ),
-                                    //               ),
-                                    //               const SizedBox(
-                                    //                 width: 10,
-                                    //               ),
                                     child: InkWell(
                                       onTap: () {
                                         setState(() {
@@ -462,277 +417,6 @@ class _ClassesScreenState extends State<ClassesScreen> {
         label: const Text('Add'),
         icon: const Icon(Icons.add),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: darkmain,
-      //   onPressed: () {
-      //     showDialog(
-      //       context: context,
-      //       builder: (BuildContext context) {
-      //         return StatefulBuilder(builder: (context, setState) {
-      //           return Form(
-      //             key: key,
-      //             child: AlertDialog(
-      //               backgroundColor: backcolor,
-      //               insetPadding: const EdgeInsets.symmetric(horizontal: 10),
-      //               contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-      //               titlePadding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-      //               shape: const RoundedRectangleBorder(
-      //                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
-      //               title: Column(
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Text(
-      //                         'Create New Class',
-      //                         style: TextStyle(
-      //                             color: darkmain,
-      //                             fontSize: ScreenUtil().setSp(20),
-      //                             fontWeight: FontWeight.w500),
-      //                       ),
-      //                       GestureDetector(
-      //                         onTap: () {
-      //                           Navigator.pop(context);
-      //                         },
-      //                         child: const Icon(
-      //                           Icons.close,
-      //                           color: Color.fromARGB(255, 28, 28, 28),
-      //                           size: 30,
-      //                         ),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                   const Divider(
-      //                     color: Colors.grey,
-      //                     thickness: 1,
-      //                   ),
-      //                 ],
-      //               ),
-      //               content: SingleChildScrollView(
-      //                 child: SizedBox(
-      //                   width: MediaQuery.of(context).size.width,
-      //                   height: MediaQuery.of(context).size.width - 80,
-      //                   child: Column(
-      //                     children: [
-      //                       Row(
-      //                         children: [
-      //                           Text(
-      //                             'ClassName',
-      //                             style: labelTextStyle,
-      //                           ),
-      //                         ],
-      //                       ),
-      //                       Container(
-      //                         padding: const EdgeInsets.only(top: 10),
-      //                         child: TextFormField(
-      //                           controller: classnamecontroller,
-      //                           autofocus: false,
-      //                           autocorrect: false,
-      //                           textCapitalization: TextCapitalization.words,
-      //                           autovalidateMode: submitted
-      //                               ? AutovalidateMode.always
-      //                               : AutovalidateMode.disabled,
-      //                           validator: RequiredValidator(
-      //                               errorText: "Class name cannot be blank !"),
-      //                           decoration: const InputDecoration(
-      //                             contentPadding: EdgeInsets.all(15.0),
-      //                             filled: true,
-      //                             fillColor: Colors.white,
-      //                             // hintText: 'Enter your email address',
-      //                             border: OutlineInputBorder(
-      //                               borderRadius: BorderRadius.all(
-      //                                 Radius.circular(10.0),
-      //                               ),
-      //                               borderSide: BorderSide.none,
-      //                             ),
-      //                           ),
-      //                           style: labelTextStyle,
-      //                           cursorColor: seccolor,
-      //                         ),
-      //                       ),
-      //                       const SizedBox(
-      //                         height: 20,
-      //                       ),
-      //                       Row(
-      //                         children: [
-      //                           Text(
-      //                             'Choose Your Grade',
-      //                             style: labelTextStyle,
-      //                           ),
-      //                         ],
-      //                       ),
-      //                       Stack(children: [
-      //                         Column(
-      //                           children: [
-      //                             Container(
-      //                               padding: const EdgeInsets.only(top: 10),
-      //                               child: TextFormField(
-      //                                 controller: customgradecontroller,
-      //                                 autofocus: false,
-      //                                 autocorrect: false,
-      //                                 textCapitalization:
-      //                                     TextCapitalization.words,
-      //                                 autovalidateMode: submitted
-      //                                     ? AutovalidateMode.always
-      //                                     : AutovalidateMode.disabled,
-      //                                 validator: RequiredValidator(
-      //                                     errorText:
-      //                                         "Class name cannot be blank !"),
-      //                                 decoration: InputDecoration(
-      //                                     contentPadding:
-      //                                         const EdgeInsets.all(15.0),
-      //                                     filled: true,
-      //                                     fillColor: Colors.white,
-      //                                     // hintText: 'Enter your email address',
-      //                                     border: const OutlineInputBorder(
-      //                                       borderRadius: BorderRadius.all(
-      //                                         Radius.circular(10.0),
-      //                                       ),
-      //                                       borderSide: BorderSide.none,
-      //                                     ),
-      //                                     suffixIcon: GestureDetector(
-      //                                         onTap: () {
-      //                                           setState(() {
-      //                                             show = !show;
-      //                                             print('>>>>> $show');
-      //                                           });
-      //                                         },
-      //                                         child: Icon(
-      //                                           Icons.arrow_drop_down,
-      //                                           color: seccolor,
-      //                                           size: 30,
-      //                                         ))),
-      //                                 style: labelTextStyle,
-      //                                 cursorColor: seccolor,
-      //                               ),
-      //                             ),
-      //                             Padding(
-      //                               padding: const EdgeInsets.only(top: 20.0),
-      //                               child: SizedBox(
-      //                                   width:
-      //                                       MediaQuery.of(context).size.width -
-      //                                           30,
-      //                                   height:
-      //                                       MediaQuery.of(context).size.height *
-      //                                           0.06,
-      //                                   child: MaterialButton(
-      //                                     elevation: 0,
-      //                                     shape: RoundedRectangleBorder(
-      //                                       borderRadius:
-      //                                           BorderRadius.circular(6),
-      //                                     ),
-      //                                     color: darkmain,
-      //                                     onPressed: () async {
-      //                                       setState(() {
-      //                                         submitted = true;
-      //                                       });
-      //                                       if (key.currentState!.validate()) {
-      //                                         setState(() {
-      //                                           getloading = true;
-      //                                         });
-      //                                         var returncode =
-      //                                             await createclassapi(
-      //                                                 classnamecontroller.text,
-      //                                                 customgradecontroller
-      //                                                     .text);
-      //                                         print('><><ret><> $returncode');
-      //                                         if (returncode == '200') {
-      //                                           // ignore: use_build_context_synchronously
-      //                                           Navigator.pop(context);
-      //                                           // ignore: use_build_context_synchronously
-      //                                           Navigator.push(
-      //                                             context,
-      //                                             MaterialPageRoute(
-      //                                                 builder: (context) =>
-      //                                                     const ClassesScreen()),
-      //                                           );
-      //                                           classnamecontroller.clear();
-      //                                           customgradecontroller.clear();
-      //                                         }
-      //                                         setState(() {
-      //                                           getloading = false;
-      //                                           submitted = false;
-      //                                         });
-      //                                       }
-      //                                     },
-      //                                     child: getloading
-      //                                         ? const SpinKitDoubleBounce(
-      //                                             color: Colors.white,
-      //                                             size: 15.0,
-      //                                           )
-      //                                         : Text(
-      //                                             'Create',
-      //                                             style: TextStyle(
-      //                                                 color: maincolor,
-      //                                                 fontSize: ScreenUtil()
-      //                                                     .setSp(20),
-      //                                                 fontWeight:
-      //                                                     FontWeight.w500),
-      //                                           ),
-      //                                   )),
-      //                             ),
-      //                           ],
-      //                         ),
-      //                         show
-      //                             ? Container(
-      //                                 height: 130,
-      //                                 width: MediaQuery.of(context).size.width -
-      //                                     20,
-      //                                 decoration: const BoxDecoration(
-      //                                     color: Colors.white,
-      //                                     borderRadius: BorderRadius.all(
-      //                                         Radius.circular(10))),
-      //                                 child: ListView.builder(
-      //                                   itemCount: dropdownlist.length,
-      //                                   itemBuilder: (context, index) {
-      //                                     return Column(
-      //                                       children: [
-      //                                         GestureDetector(
-      //                                           onTap: () {
-      //                                             customgradecontroller.text =
-      //                                                 dropdownlist[index]
-      //                                                     .toString();
-      //                                             setState(() {
-      //                                               show = false;
-      //                                             });
-      //                                           },
-      //                                           child: ListTile(
-      //                                             title:
-      //                                                 Text(dropdownlist[index]),
-      //                                           ),
-      //                                         ),
-      //                                         index != 11
-      //                                             ? Padding(
-      //                                                 padding: const EdgeInsets
-      //                                                         .symmetric(
-      //                                                     horizontal: 8.0),
-      //                                                 child: Divider(
-      //                                                   color: darkmain,
-      //                                                 ),
-      //                                               )
-      //                                             : Container()
-      //                                       ],
-      //                                     );
-      //                                   },
-      //                                 ),
-      //                               )
-      //                             : Container()
-      //                       ]),
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //           );
-      //         });
-      //       },
-      //     );
-      //   },
-      //   child: const Icon(
-      //     Icons.add,
-      //     size: 30,
-      //   ),
-      // ),
     );
   }
 }
@@ -794,7 +478,9 @@ class _ClassModelState extends State<ClassModel> {
                     backgroundColor: paledarkmain,
                     radius: 25,
                     child: Text(
-                      widget.eachclass.title[0].toUpperCase(),
+                      widget.eachclass.title == ""
+                          ? ""
+                          : widget.eachclass.title[0].toUpperCase(),
                       style: buttonTextStyle,
                     )),
                 const SizedBox(
@@ -804,7 +490,10 @@ class _ClassModelState extends State<ClassModel> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('${widget.eachclass.title.characters.take(36)}',
+                    Text(
+                        widget.eachclass.title == ""
+                            ? ""
+                            : '${widget.eachclass.title.characters.take(36)}',
                         style: firstTextstyle),
                     // Text(
                     //   '${widget.eachclass.description}',

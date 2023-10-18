@@ -120,6 +120,7 @@ class _SignInFieldScreenState extends State<SignInFieldScreen> {
         }
       });
     } catch (e) {
+      print(e);
       showToast("Error >>>>> $e", "red");
       setState(() {
         showloading = false;
@@ -315,7 +316,8 @@ class _SignInFieldScreenState extends State<SignInFieldScreen> {
                                       child: Text(
                                         'Forgot password?',
                                         style: TextStyle(
-                                            color: const Color.fromARGB( 255, 0, 134, 244),
+                                            color: const Color.fromARGB(
+                                                255, 0, 134, 244),
                                             fontSize: ScreenUtil().setSp(14),
                                             fontWeight: FontWeight.w400),
                                       ),

@@ -7,7 +7,7 @@ import 'package:class_on_cloud/screens/Sign/signup.dart';
 import 'package:class_on_cloud/screens/Classes/class.dart';
 import 'package:class_on_cloud/screens/home.dart';
 import 'package:class_on_cloud/screens/massage.dart';
-import 'package:class_on_cloud/screens/progress.dart';
+import 'package:class_on_cloud/screens/Progress/progress.dart';
 import 'package:class_on_cloud/screens/student.dart';
 import 'package:class_on_cloud/screens/teacherprofile.dart';
 import 'package:flutter/material.dart';

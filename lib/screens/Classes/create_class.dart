@@ -443,7 +443,7 @@ class _CreateClassState extends State<CreateClass> {
                                         size: 15.0,
                                       )
                                     : Text(
-                                        'Create',
+                                        'Create Class',
                                         style: TextStyle(
                                             color: maincolor,
                                             fontSize: ScreenUtil().setSp(20),

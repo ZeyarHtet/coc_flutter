@@ -2,114 +2,78 @@ import 'dart:convert';
 
 import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/model.dart';
-import 'package:class_on_cloud/screens/classposting.dart';
-import 'package:class_on_cloud/screens/newposting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../model/component.dart';
-import '../model/constant.dart';
-import 'drawer.dart';
-import 'home.dart';
+import '../../model/component.dart';
+import '../../model/constant.dart';
+import '../drawer.dart';
 
-class GetPostScreen extends StatefulWidget {
-  const GetPostScreen({super.key});
+class StudentList extends StatefulWidget {
+  const StudentList({super.key});
 
   @override
-  State<GetPostScreen> createState() => _GetPostScreenState();
+  State<StudentList> createState() => _StudentListState();
 }
 
-class _GetPostScreenState extends State<GetPostScreen> {
-  bool searchBoolean = false;
-
-  List<classpostlistmodel> myclasspost = [];
-  classpostlistmodel? selectedclasspost;
-  late var result;
+class _StudentListState extends State<StudentList> {
+  List<studentlistinClass> mystudent = [];
+  studentlistinClass? selectedstudent;
+  bool show = false;
   bool ready = false;
+  late var result;
   classlistmodel? selectedclass;
 
-  getclasspost() async {
+  getstudent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var mineclass = prefs.getString('selectedClass');
-    mineclass == null
-        ? selectedclass = null
-        : selectedclass = classlistmodel.singledecode(mineclass);
-    result = await getclasspostapi();
+    result = await getstudentapi(selectedclass!.classId);
     print('>>>>>>>>>>>>>>>>>>>>>>$result');
-    if (result['returnCode'] == '300') {
+    if (result['returncode'] == '300') {
       setState(() {
-        myclasspost = [];
+        mystudent = [];
       });
-    } else if (result['returnCode'] == '200') {
-      List classpostList = result['posts'];
-      print('>>>>>>>>>>>>>>> classpostlist$classpostList');
-      if (classpostList.isNotEmpty) {
-        for (var i = 0; i < classpostList.length; i++) {
-          myclasspost.add(
-            classpostlistmodel(
-              postId: classpostList[i]['post_id'] ?? "",
-              classId: classpostList[i]['class_id'] ?? "",
-              title: classpostList[i]['title'] ?? "",
-              type: classpostList[i]['type'].toString(),
-              duedate: classpostList[i]['due_date'] ?? "",
-            ),
-          );
+    } else if (result['returncode'] == '200') {
+      List studentlist = result['data'];
+      print('>>>>>>>>>>>>>>> student list$studentlist');
+      if (studentlist.isNotEmpty) {
+        for (var i = 0; i < studentlist.length; i++) {
+          mystudent.add(studentlistinClass(
+            username: studentlist[i]['username'] ?? "",
+            studentEmail: studentlist[i]['student_email'] ?? "",
+            studentId: studentlist[i]['student_id'] ?? "",
+          ));
+          // print(">>>>>>>> ${myclass[0].coverpic}");
         }
-        print(">>>>>>>>>>>>> class length ${myclasspost.length}");
 
-        String encodedclasspost = classpostlistmodel.encode(myclasspost);
-        await prefs.setString('classpostList', encodedclasspost);
+        String encodedstudent = studentlistinClass.encode(mystudent);
+        await prefs.setString('studentlist', encodedstudent);
       }
     }
 
-    var mineclasspost = prefs.getString('selectedclassPost');
-    mineclasspost == null
-        ? selectedclasspost = null
-        : selectedclasspost = classpostlistmodel.singledecode(mineclasspost);
+    var minestudent = prefs.getString('selectedStudent');
+    minestudent == null
+        ? selectedstudent = null
+        : selectedstudent = studentlistinClass.singledecode(minestudent);
     setState(() {
       ready = true;
     });
   }
 
-  delectedclasspost(String postid) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    result = await deleteclasspostapi(postid);
-
-    print('>><><><>< before>>${myclasspost.length}');
-    if (postid == selectedclasspost?.postId) {
-      var removedData =
-          myclasspost.removeWhere((element) => element.postId == postid);
-
-      print('>><><><>< ${myclasspost.length}');
-      if (myclasspost.isEmpty) {
-        var addinnull = await prefs.remove('selectedClass');
-        print('><><>>>>>Nulling $addinnull');
-      } else {
-        String selectedencode = classpostlistmodel.sigleencode(myclasspost[0]);
-        await prefs.setString("selectedclasspost", selectedencode);
-      }
-    }
-    if (result['returnCode'] == '200') {
-      Navigator.pop(context);
-      showToast('successfully deleted', 'darkmain');
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const GetPostScreen()),
-          (route) => false);
-    } else {
-      Navigator.pop(context);
-      showToast('${result['returnCode']}', 'red');
-    }
-    setState(() {});
+  getselectedclass() async {
+    final prefs = await SharedPreferences.getInstance();
+    var mineclass = prefs.getString('selectedClass');
+    mineclass == null
+        ? selectedclass = null
+        : selectedclass = classlistmodel.singledecode(mineclass);
   }
 
   @override
   void initState() {
-    getclasspost();
+    getselectedclass();
+    getstudent();
     super.initState();
   }
 
@@ -125,21 +89,19 @@ class _GetPostScreenState extends State<GetPostScreen> {
           color: maincolor,
           size: 30,
         ),
-        title: Text("Post", style: appbarTextStyle(maincolor)),
+        title: Text("Student List", style: appbarTextStyle(maincolor)),
       ),
-
-      drawer: searchBoolean
-          ? null
-          : SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: DrawerScreen(
-                pagename: selectedclass == null ? 'Home' : selectedclass!.title,
-              )),
+      drawer: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: DrawerScreen(
+          pagename: 'Student List',
+        ),
+      ),
       body: ready
-          ? myclasspost.isEmpty
+          ? mystudent.isEmpty
               ? Center(
                   child: Text(
-                    "You don't have any post yet!",
+                    "You don't have any list yet!",
                     style: inputTextStyle,
                   ),
                 )
@@ -149,7 +111,7 @@ class _GetPostScreenState extends State<GetPostScreen> {
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
-                          itemCount: myclasspost.length,
+                          itemCount: mystudent.length,
                           itemBuilder: (context, i) {
                             return Slidable(
                               endActionPane: ActionPane(
@@ -159,29 +121,21 @@ class _GetPostScreenState extends State<GetPostScreen> {
                                   Expanded(
                                     child: InkWell(
                                       onTap: () {
-                                        setState(() {
-                                          print(">>>>> my data");
-                                          var mydata = jsonEncode({
-                                            "post_id": myclasspost[i].postId,
-                                            "class_id": myclasspost[i].classId,
-                                            "title": myclasspost[i].title,
-                                            "type": myclasspost[i].type,
-                                            "due_date": myclasspost[i].duedate,
-                                          });
-                                          print(">>>>> my data");
-                                          print(mydata);
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //     builder: (context) => EditSchool(
-                                          //       editData: mydata,
-                                          //     ),
-                                          //   ),
-                                          // );
-                                        });
+                                        setState(
+                                          () {
+                                            print(">>>>> my data");
+                                            var mydata = jsonEncode({
+                                              "student_id":
+                                                  mystudent[i].studentId,
+                                              "username": mystudent[i].username,
+                                              "student_email":
+                                                  mystudent[i].studentEmail,
+                                            });
+                                            print(">>>>> my data");
+                                            print(mydata);
+                                          },
+                                        );
                                       },
-                                      // borderRadius:
-                                      //     BorderRadius.circular(16),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -237,11 +191,11 @@ class _GetPostScreenState extends State<GetPostScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  myclasspost[i].postId ==
-                                                          selectedclasspost
-                                                              ?.postId
+                                                  mystudent[i].studentId ==
+                                                          selectedstudent
+                                                              ?.studentId
                                                       ? Text(
-                                                          "You have been viewing this post! Do you want to delete?",
+                                                          "You have been viewing this list! Do you want to delete?",
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .redAccent,
@@ -254,7 +208,7 @@ class _GetPostScreenState extends State<GetPostScreen> {
                                                                       .w500),
                                                         )
                                                       : Text(
-                                                          "Are You sure to delete this post?",
+                                                          "Are You sure to delete this list?",
                                                           style: TextStyle(
                                                               color: seccolor,
                                                               fontSize:
@@ -291,19 +245,7 @@ class _GetPostScreenState extends State<GetPostScreen> {
                                                           )),
                                                       TextButton(
                                                         // 1/9
-                                                        onPressed: () async {
-                                                          Navigator.pop(
-                                                              context);
-                                                          showLoadingDialog(
-                                                              context,
-                                                              "Loading. . .");
-
-                                                          // showLoadingDialog(
-                                                          //     context);
-                                                          await delectedclasspost(
-                                                              myclasspost[i]
-                                                                  .postId);
-                                                        },
+                                                        onPressed: () async {},
                                                         child: Text(
                                                           'Confirm',
                                                           style: TextStyle(
@@ -361,8 +303,8 @@ class _GetPostScreenState extends State<GetPostScreen> {
                                   ),
                                 ],
                               ),
-                              child: ClassPostModel(
-                                eachclasspost: myclasspost[i],
+                              child: StudentModel(
+                                eachstudent: mystudent[i],
                               ),
                             );
                           })),
@@ -373,44 +315,21 @@ class _GetPostScreenState extends State<GetPostScreen> {
                 size: 50,
               ),
             ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   backgroundColor: darkmain,
-      //   onPressed: () {
-      //     Navigator.push(context,
-      //         MaterialPageRoute(builder: (context) => PostingScreen()));
-      //   },
-      //   label: const Text('Add'),
-      //   icon: const Icon(Icons.add),
-      // ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: darkmain,
-        onPressed: () {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: PostingScreen(
-                    selectedclass: selectedclass!,
-                  )));
-        },
-        child: const Icon(Icons.add, size: 30),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
 
-class ClassPostModel extends StatefulWidget {
-  classpostlistmodel eachclasspost;
+class StudentModel extends StatefulWidget {
+  studentlistinClass eachstudent;
   // String classname;
-  ClassPostModel({super.key, required this.eachclasspost});
+  StudentModel({super.key, required this.eachstudent});
 
   @override
-  State<ClassPostModel> createState() => _ClassPostModelState();
+  State<StudentModel> createState() => _StuedentModelState();
 }
 
-class _ClassPostModelState extends State<ClassPostModel> {
-  // List<studentlistinClass> studentlist = [];
+class _StuedentModelState extends State<StudentModel> {
+  List<studentlistinClass> studentlist = [];
 
   @override
   Widget build(BuildContext context) {
@@ -426,10 +345,10 @@ class _ClassPostModelState extends State<ClassPostModel> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CircleAvatar(
-                  backgroundColor: paledarkmain,
+                  backgroundColor: paledarkmain, 
                   radius: 25,
                   child: Text(
-                    widget.eachclasspost.title[0].toUpperCase(),
+                    widget.eachstudent.username[0].toUpperCase(),
                     style: buttonTextStyle,
                   )),
               const SizedBox(
@@ -439,12 +358,8 @@ class _ClassPostModelState extends State<ClassPostModel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('${widget.eachclasspost.title.characters.take(36)}',
+                  Text('${widget.eachstudent.studentEmail.characters.take(36)}',
                       style: firstTextstyle),
-                  Text(
-                    widget.eachclasspost.duedate,
-                    style: secondTextstyle(Colors.grey[600]),
-                  ),
                 ],
               ),
             ],

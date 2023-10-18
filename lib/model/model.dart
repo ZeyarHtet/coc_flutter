@@ -163,6 +163,8 @@ class studentlistinClass {
       (json.decode(students) as List<dynamic>)
           .map<studentlistinClass>((item) => studentlistinClass.fromJson(item))
           .toList();
+
+  static studentlistinClass? singledecode(String minestudent) {}
 }
 
 class studentparentpair {
@@ -307,6 +309,7 @@ class classpostlistmodel {
   String title;
   String type;
   String duedate;
+  List postDetails;
 
   classpostlistmodel({
     required this.postId,
@@ -314,6 +317,7 @@ class classpostlistmodel {
     required this.title,
     required this.type,
     required this.duedate,
+    required this.postDetails,
   });
 
   factory classpostlistmodel.fromJson(Map<String, dynamic> jsonData) {
@@ -323,6 +327,7 @@ class classpostlistmodel {
       title: jsonData['title'],
       type: jsonData['type'],
       duedate: jsonData['due_date'],
+      postDetails: jsonData['post_details'],
     );
   }
 
@@ -331,7 +336,8 @@ class classpostlistmodel {
         "class_id": classpost.classId,
         "title": classpost.title,
         "type": classpost.type,
-        "due_date": classpost.duedate
+        "due_date": classpost.duedate,
+        "post_details": classpost.postDetails,
       };
 
   static String encode(List<classpostlistmodel> classes) => json.encode(

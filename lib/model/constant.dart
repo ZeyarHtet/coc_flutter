@@ -4,10 +4,10 @@ import 'package:class_on_cloud/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-const domain = "http://192.168.1.27:5050";
-const miniohttp = "http://192.168.1.27:9000";
+const domain = "http://192.168.1.3:5050";
+const miniohttp = "http://192.168.1.3:9000";
 
-var name  = "";
+var name = "";
 var email = "";
 var token = "";
 var userid = '';
@@ -16,7 +16,7 @@ var profileUrl = "";
 var contact = '';
 var phone = '';
 var remark = '';
-  
+
 // classlistmodel defaultclassmodel = classlistmodel(
 //     classId: "None",
 //     title: "No title",
