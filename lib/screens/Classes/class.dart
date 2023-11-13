@@ -5,6 +5,7 @@ import 'package:class_on_cloud/model/constant.dart';
 import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/model.dart';
 import 'package:class_on_cloud/screens/Classes/create_class.dart';
+import 'package:class_on_cloud/screens/Posts/getpost.dart';
 import 'package:class_on_cloud/screens/classposting.dart';
 import 'package:class_on_cloud/screens/drawer.dart';
 import 'package:class_on_cloud/screens/Classes/edit_class.dart';
@@ -458,8 +459,8 @@ class _ClassModelState extends State<ClassModel> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => NavbarScreen(
-                    screenindex: 0,
+              builder: (context) => const GetPostScreen(
+                    // screenindex: 0,
                   )),
         );
       },

@@ -661,7 +661,7 @@ deleteprofileapi() async {
 //     showToast(e.toString(), 'red');
 //   }
 // }
-createPostApi(Map<String, dynamic> allvaluelist, List<XFile> files) async {
+createPostApi(Map<String, dynamic> allvaluelist, List files) async {
   var url = "$domain/api/post/createPost";
   List storefile = [];
   print("<><><><><><><>><><<><>><>1");

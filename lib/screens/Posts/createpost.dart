@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/component.dart';
 import 'package:class_on_cloud/model/constant.dart';
 import 'package:class_on_cloud/model/model.dart';
+import 'package:class_on_cloud/screens/Posts/getpost.dart';
 import 'package:class_on_cloud/screens/home.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -29,7 +33,7 @@ class _PostingScreenState extends State<PostingScreen> {
   TextEditingController codetextcontroller = TextEditingController();
   TextEditingController duedatecontroller = TextEditingController();
   List<TextEditingController> captiontextcontroller = [];
-  List<XFile> files = [];
+  List files = [];
 
   final _formKey = GlobalKey<FormState>();
   DateTime? picked;
@@ -42,7 +46,7 @@ class _PostingScreenState extends State<PostingScreen> {
 
   final ImagePicker _picker = ImagePicker();
   // List<List<XFile>> galaryimagelist = [];
-  List<XFile> galaryimg = [];
+  List<File> galaryimg = [];
   Future<void> _selectImage() async {
     var pairone = await _picker.pickMultiImage(
         // source: ImageSource.z
@@ -51,7 +55,8 @@ class _PostingScreenState extends State<PostingScreen> {
     for (var eachphoto in pairone) {
       captiontextcontroller.add(TextEditingController());
       var index = postlist.length;
-      postlist.add(Eachpost(
+      postlist.add(
+        Eachpost(
           id: index,
           value: eachphoto,
           type: 'photo',
@@ -63,29 +68,68 @@ class _PostingScreenState extends State<PostingScreen> {
                 postlist.removeWhere((element) => element.id == index);
               });
             },
-          )));
+          ),
+        ),
+      );
     }
-    // if (postlist.last.type == 'pic') {
-    //   for (var element in pairone) {
-    //     galaryimg.add(element);
-    //   }
-    //   postlist.last.widget = Imagecontainer(galaryimage: galaryimg);
-    //   setState(() {});
-    // } else {
-    //   List<String> imgvalue = [];
-    //   for (var element in pairone) {
-    //     imgvalue.add(element.name);
-    //   }
-    //   postlist.add(Eachpost(
-    //       value: imgvalue,
-    //       type: 'pic',
-    //       widget: Imagecontainer(
-    //         galaryimage: pairone,
-    //       )));
-    //   // galaryimg = [];
-    //   setState(() {});
-    // }
+
     setState(() {});
+  }
+
+  void uploadPDF() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true, type: FileType.custom, allowedExtensions: ['pdf']);
+    print(">>>>>>>>>> result $result");
+    XFile file = XFile(result!.files.single.path ?? "");
+    print(file.name);
+    captiontextcontroller.add(TextEditingController());
+    var index = postlist.length;
+    postlist.add(
+      Eachpost(
+        id: index,
+        value: file,
+        type: 'file',
+        widget: Newfilecontainerwithcaption(
+          filepath: file,
+          capcontroller: captiontextcontroller.last,
+          deletefun: () {
+            setState(() {
+              postlist.removeWhere((element) => element.id == index);
+            });
+          },
+        ),
+        // widget: Container(
+        //   child: Row(
+        //     children: [
+        //       Container(
+        //         width: 25,
+        //         height: 25,
+        //         margin: const EdgeInsets.all(5),
+        //         child: const Image(
+        //           image: AssetImage('images/pdf.png'),
+        //           color: Colors.black,
+        //         ),
+        //       ),
+        //       Expanded(
+        //         child: Container(
+        //           child: const Text('Hello PDF'),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        //  Newfilecontainerwithcaption(
+        //   filepath: file,
+        //   capcontroller: captiontextcontroller.last,
+        //   deletefun: () {
+        //     setState(() {
+        //       postlist.removeWhere((element) => element.id == index);
+        //     });
+        //   },
+        // ),
+      ),
+    );
   }
 
   // Future<void> newcontroller() async {
@@ -169,7 +213,7 @@ class _PostingScreenState extends State<PostingScreen> {
         }
       } else if (finallist[i].type == 'photo') {
         sortkey = sortkey + 1;
-        XFile imagepath = finallist[i].value;
+        File imagepath = finallist[i].value;
         files.add(imagepath);
         valuelist.add({
           "type": 2,
@@ -225,9 +269,9 @@ class _PostingScreenState extends State<PostingScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => NavbarScreen(
-              screenindex: 0,
-            ),
+            builder: (BuildContext context) => const GetPostScreen(
+                // screenindex: 0,
+                ),
           ),
         );
         setState(() {
@@ -291,7 +335,7 @@ class _PostingScreenState extends State<PostingScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            title: Text("Create Posts", style: appbarTextStyle(darkmain)),
+            title: Text("Create Post", style: appbarTextStyle(darkmain)),
             actions: [
               GestureDetector(
                 onTap: () {
@@ -300,28 +344,6 @@ class _PostingScreenState extends State<PostingScreen> {
                     getloading = true;
                   });
                   postBlog(postlist);
-                  // var returncode = await createpostapi(
-                  //     widget.selectedclass.classId,
-                  //     titletextcontroller.text,
-                  //     [],
-                  //     duedatecontroller.text);
-                  // print('><><ret><> $returncode');
-                  // if (returncode == '200') {
-                  //   print("<<<<<<<x<<<<<<<<object1>>>>>>>>>>>>>>>");
-                  //   // ignore: use_build_context_synchronously
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => const JournelScreen()),
-                  //   );
-                  //   titletextcontroller.clear();
-                  //   duedatecontroller.clear;
-                  // }
-                  // setState(() {
-                  //   getloading = false;
-                  //   submitted = false;
-                  // });
-                  // print('>>>>>><<<<<<>>>>>>>');
                 },
                 child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 6, 5, 6),
@@ -498,14 +520,19 @@ class _PostingScreenState extends State<PostingScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: seccolor,
-                            child: const Icon(
-                              Icons.insert_drive_file_outlined,
-                              size: 18,
+                        GestureDetector(
+                          onTap: () {
+                            uploadPDF();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: seccolor,
+                              child: const Icon(
+                                Icons.insert_drive_file_outlined,
+                                size: 18,
+                              ),
                             ),
                           ),
                         ),

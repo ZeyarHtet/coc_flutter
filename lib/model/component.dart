@@ -354,7 +354,7 @@ class _ImagecontainerState extends State<Imagecontainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       // height: widget.galaryimage.length > 9
       //     ? MediaQuery.of(context).size.height * 0.48
       //     : null,
@@ -393,11 +393,11 @@ class _ImagecontainerState extends State<Imagecontainer> {
                           setState(() {});
                         },
                         child: Container(
-                          padding: EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: Color.fromARGB(150, 117, 117, 117)),
-                          child: Icon(
+                              color: const Color.fromARGB(150, 117, 117, 117)),
+                          child: const Icon(
                             Icons.close,
                             size: 15,
                             color: Colors.white,
@@ -449,11 +449,12 @@ class _ImagecontainerState extends State<Imagecontainer> {
                               setState(() {});
                             },
                             child: Container(
-                              padding: EdgeInsets.all(3),
+                              padding: const EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: Color.fromARGB(150, 117, 117, 117)),
-                              child: Icon(
+                                  color:
+                                      const Color.fromARGB(150, 117, 117, 117)),
+                              child: const Icon(
                                 Icons.close,
                                 size: 15,
                                 color: Colors.white,
@@ -612,7 +613,111 @@ class _NewimagecontainerwithcaptionState
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: Color.fromARGB(150, 117, 117, 117)),
+                        color: const Color.fromARGB(150, 117, 117, 117)),
+                    child: const Icon(
+                      Icons.close,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Newfilecontainerwithcaption extends StatefulWidget {
+  XFile filepath;
+  TextEditingController capcontroller;
+  void Function()? deletefun;
+  Newfilecontainerwithcaption({
+    super.key,
+    required this.filepath,
+    required this.capcontroller,
+    required this.deletefun,
+  });
+
+  @override
+  State<Newfilecontainerwithcaption> createState() =>
+      _NewfilecontainerwithcaptionState();
+}
+
+class _NewfilecontainerwithcaptionState
+    extends State<Newfilecontainerwithcaption> {
+  bool isWeb = GetPlatform.isWeb;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Divider(
+            color: Colors.grey[500],
+          ),
+          TextFormField(
+            controller: widget.capcontroller,
+            maxLines: 4,
+            minLines: 1,
+            decoration: InputDecoration(
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8),
+              filled: true,
+              fillColor: Colors.grey[200],
+              hintText: 'write caption here',
+              hintStyle: labelTextStyle,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.0),
+                ),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            style: inputTextStyle,
+            cursorColor: seccolor,
+          ),
+          Stack(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 25,
+                    height: 25,
+                    margin: const EdgeInsets.all(5),
+                    child: const Image(
+                      image: AssetImage("images/pdf.png"),
+                      color: Colors.black,
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: Text(
+                        widget.filepath.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                right: 0.2,
+                top: 0.2,
+                child: GestureDetector(
+                  onTap: widget.deletefun,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color.fromARGB(150, 117, 117, 117)),
                     child: const Icon(
                       Icons.close,
                       size: 15,
@@ -871,7 +976,7 @@ class blogpostCompo extends StatelessWidget {
                             fontSize: ScreenUtil().setSp(16),
                             fontWeight: FontWeight.w500),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 8,
                       ),
                       Text(

@@ -139,81 +139,140 @@ class _ProgressScreenState extends State<ProgressScreen> {
         },
         child: ListView(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 60,
-                color: darkmain,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Assignment 1',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
+            Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(color: backcolor),
+                  padding: const EdgeInsets.all(8),
+                  child:  Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Assignment 1'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Divider(
+                  color: Colors.grey[300],
+                  thickness: 1,
+                  height: 1.1,
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 60,
-                color: darkmain,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Assignment 2',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
+            Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(color: backcolor),
+                  padding: const EdgeInsets.all(8),
+                  child:  Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Assignment 2'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Divider(
+                  color: Colors.grey[300],
+                  thickness: 1,
+                  height: 1.1,
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 60,
-                color: darkmain,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Assignment 3',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
+            Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(color: backcolor),
+                  padding: const EdgeInsets.all(8),
+                  child:  Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Assignment 3'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Divider(
+                  color: Colors.grey[300],
+                  thickness: 1,
+                  height: 1.1,
+                )
+              ],
             ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Container(
+            //     height: 60,
+            //     color: darkmain,
+            //     child: const Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       children: [
+            //         SizedBox(
+            //           width: 10,
+            //         ),
+            //         Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             Text(
+            //               'Assignment 2',
+            //               style: TextStyle(color: Colors.white),
+            //             ),
+            //           ],
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Container(
+            //     height: 60,
+            //     color: darkmain,
+            //     child: const Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       children: [
+            //         SizedBox(
+            //           width: 10,
+            //         ),
+            //         Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             Text(
+            //               'Assignment 3',
+            //               style: TextStyle(color: Colors.white),
+            //             ),
+            //           ],
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

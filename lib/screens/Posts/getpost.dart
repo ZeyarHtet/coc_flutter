@@ -6,7 +6,7 @@ import 'package:class_on_cloud/model/model.dart';
 import 'package:class_on_cloud/screens/Classes/edit_class.dart';
 import 'package:class_on_cloud/screens/Posts/edit_post.dart';
 import 'package:class_on_cloud/screens/Posts/minioimagetest.dart';
-import 'package:class_on_cloud/screens/Posts/postinside.dart';
+import 'package:class_on_cloud/screens/Posts/postdetails.dart';
 import 'package:class_on_cloud/screens/classposting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/component.dart';
 import '../../model/constant.dart';
 import '../drawer.dart';
-import '../home.dart';
 import 'createpost.dart';
 
 class GetPostScreen extends StatefulWidget {
@@ -128,180 +127,215 @@ class _GetPostScreenState extends State<GetPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backcolor,
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: darkmain,
-        iconTheme: IconThemeData(
-          color: maincolor,
-          size: 30,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: darkmain,
+          iconTheme: IconThemeData(
+            color: maincolor,
+            size: 30,
+          ),
+          title: Text("Post", style: appbarTextStyle(maincolor)),
         ),
-        title: Text("Post", style: appbarTextStyle(maincolor)),
-      ),
-      drawer: searchBoolean
-          ? null
-          : SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: DrawerScreen(
-                pagename: selectedclass == null ? 'Home' : selectedclass!.title,
-              )),
-      body: ready
-          ? myclasspost.isEmpty
-              ? Center(
-                  child: Text(
-                    "You don't have any post yet!",
-                    style: inputTextStyle,
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                  child: Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: RefreshIndicator(
-                        onRefresh: _refresh,
-                        child: ListView.builder(
-                            itemCount: myclasspost.length,
-                            itemBuilder: (context, i) {
-                              return Slidable(
-                                endActionPane: ActionPane(
-                                  extentRatio: 0.26,
-                                  motion: const DrawerMotion(),
-                                  children: [
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            print(">>>>> my data");
-                                            var mydata = jsonEncode({
-                                              "post_id": myclasspost[i].postId,
-                                              "class_id":
-                                                  myclasspost[i].classId,
-                                              "title": myclasspost[i].title,
-                                              "type": myclasspost[i].type,
-                                              "due_date":
-                                                  myclasspost[i].duedate,
-                                            });
-                                            print(">>>>> my data");
-                                            print(mydata);
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType
-                                                    .bottomToTop,
-                                                child: EditPost(
-                                                  editData: mydata,
-                                                  selectedclass: selectedclass!,
+        drawer: searchBoolean
+            ? null
+            : SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: DrawerScreen(
+                  pagename:
+                      selectedclass == null ? 'Home' : selectedclass!.title,
+                )),
+        body: ready
+            ? myclasspost.isEmpty
+                ? Center(
+                    child: Text(
+                      "You don't have any post yet!",
+                      style: inputTextStyle,
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: RefreshIndicator(
+                          onRefresh: _refresh,
+                          child: ListView.builder(
+                              itemCount: myclasspost.length,
+                              itemBuilder: (context, i) {
+                                return Slidable(
+                                  endActionPane: ActionPane(
+                                    extentRatio: 0.26,
+                                    motion: const DrawerMotion(),
+                                    children: [
+                                      Expanded(
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              print(">>>>> my data");
+                                              var mydata = jsonEncode({
+                                                "post_id":
+                                                    myclasspost[i].postId,
+                                                "class_id":
+                                                    myclasspost[i].classId,
+                                                "title": myclasspost[i].title,
+                                                "type": myclasspost[i].type,
+                                                "due_date":
+                                                    myclasspost[i].duedate,
+                                              });
+                                              print(">>>>> my data");
+                                              print(mydata);
+                                              Navigator.push(
+                                                context,
+                                                PageTransition(
+                                                  type: PageTransitionType
+                                                      .bottomToTop,
+                                                  child: EditPost(
+                                                    editData: mydata,
+                                                    selectedclass:
+                                                        selectedclass!,
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          });
-                                        },
-                                        // borderRadius:
-                                        //     BorderRadius.circular(16),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.09,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 2,
-                                                        vertical: 0),
-                                                alignment: Alignment.center,
-                                                // width: 20 *
-                                                //     4, // space for actionPan
-                                                decoration: BoxDecoration(
-                                                    color: paledarkmain,
-                                                    shape: BoxShape.circle),
-                                                child: const Icon(Icons.edit,
-                                                    size: 20,
-                                                    color: Colors.white)),
-                                            Divider(
-                                              color: Colors.grey[300],
-                                              thickness: 1,
-                                              height: 1.1,
-                                            )
-                                          ],
+                                              );
+                                            });
+                                          },
+                                          // borderRadius:
+                                          //     BorderRadius.circular(16),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.09,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 2,
+                                                      vertical: 0),
+                                                  alignment: Alignment.center,
+                                                  // width: 20 *
+                                                  //     4, // space for actionPan
+                                                  decoration: BoxDecoration(
+                                                      color: paledarkmain,
+                                                      shape: BoxShape.circle),
+                                                  child: const Icon(Icons.edit,
+                                                      size: 20,
+                                                      color: Colors.white)),
+                                              Divider(
+                                                color: Colors.grey[300],
+                                                thickness: 1,
+                                                height: 1.1,
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                contentPadding:
-                                                    const EdgeInsets.only(
-                                                  left: 10,
-                                                  top: 15,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                content: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    myclasspost[i].postId ==
-                                                            selectedclasspost
-                                                                ?.postId
-                                                        ? Text(
-                                                            "You have been viewing this post! Do you want to delete?",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .redAccent,
-                                                                fontSize:
-                                                                    ScreenUtil()
-                                                                        .setSp(
-                                                                            15),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          )
-                                                        : Text(
-                                                            "Are You sure to delete this post?",
-                                                            style: TextStyle(
-                                                                color: seccolor,
-                                                                fontSize:
-                                                                    ScreenUtil()
-                                                                        .setSp(
-                                                                            15),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        TextButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Text(
-                                                              "Cancel",
+                                      Expanded(
+                                        child: InkWell(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                    left: 10,
+                                                    top: 15,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      myclasspost[i].postId ==
+                                                              selectedclasspost
+                                                                  ?.postId
+                                                          ? Text(
+                                                              "You have been viewing this post! Do you want to delete?",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .redAccent,
+                                                                  fontSize:
+                                                                      ScreenUtil()
+                                                                          .setSp(
+                                                                              15),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            )
+                                                          : Text(
+                                                              "Are You sure to delete this post?",
                                                               style: TextStyle(
                                                                   color:
                                                                       seccolor,
+                                                                  fontSize:
+                                                                      ScreenUtil()
+                                                                          .setSp(
+                                                                              15),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child: Text(
+                                                                "Cancel",
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        seccolor,
+                                                                    fontSize: ScreenUtil()
+                                                                        .setSp(
+                                                                            14),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                              )),
+                                                          TextButton(
+                                                            // 1/9
+                                                            onPressed:
+                                                                () async {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              showLoadingDialog(
+                                                                  context,
+                                                                  "Loading. . .");
+
+                                                              // showLoadingDialog(
+                                                              //     context);
+                                                              await delectedclasspost(
+                                                                  myclasspost[i]
+                                                                      .postId);
+                                                            },
+                                                            child: Text(
+                                                              'Confirm',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      darkmain,
                                                                   fontSize:
                                                                       ScreenUtil()
                                                                           .setSp(
@@ -309,109 +343,86 @@ class _GetPostScreenState extends State<GetPostScreen> {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500),
-                                                            )),
-                                                        TextButton(
-                                                          // 1/9
-                                                          onPressed: () async {
-                                                            Navigator.pop(
-                                                                context);
-                                                            showLoadingDialog(
-                                                                context,
-                                                                "Loading. . .");
-
-                                                            // showLoadingDialog(
-                                                            //     context);
-                                                            await delectedclasspost(
-                                                                myclasspost[i]
-                                                                    .postId);
-                                                          },
-                                                          child: Text(
-                                                            'Confirm',
-                                                            style: TextStyle(
-                                                                color: darkmain,
-                                                                fontSize:
-                                                                    ScreenUtil()
-                                                                        .setSp(
-                                                                            14),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.09,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 2,
-                                                        vertical: 0),
-                                                alignment: Alignment.center,
-                                                // width: 20 *
-                                                //     4, // space for actionPan
-                                                decoration: const BoxDecoration(
-                                                    color: Colors.redAccent,
-                                                    shape: BoxShape.circle),
-                                                child: const Icon(Icons.delete,
-                                                    size: 20,
-                                                    color: Colors.white)),
-                                            Divider(
-                                              color: Colors.grey[300],
-                                              thickness: 1,
-                                              height: 1.1,
-                                            )
-                                          ],
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.09,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(horizontal: 5),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 2,
+                                                      vertical: 0),
+                                                  alignment: Alignment.center,
+                                                  // width: 20 *
+                                                  //     4, // space for actionPan
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color:
+                                                              Colors.redAccent,
+                                                          shape:
+                                                              BoxShape.circle),
+                                                  child: const Icon(
+                                                      Icons.delete,
+                                                      size: 20,
+                                                      color: Colors.white)),
+                                              Divider(
+                                                color: Colors.grey[300],
+                                                thickness: 1,
+                                                height: 1.1,
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                child: ClassPostModel(
-                                  eachclasspost: myclasspost[i],
-                                ),
-                              );
-                            }),
-                      )),
-                )
-          : Center(
-              child: SpinKitFoldingCube(
-                color: paledarkmain,
-                size: 50,
+                                    ],
+                                  ),
+                                  child: ClassPostModel(
+                                    eachclasspost: myclasspost[i],
+                                  ),
+                                );
+                              }),
+                        )),
+                  )
+            : Center(
+                child: SpinKitFoldingCube(
+                  color: paledarkmain,
+                  size: 50,
+                ),
               ),
-            ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: darkmain,
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.bottomToTop,
-              child: PostingScreen(
-                selectedclass: selectedclass!,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: darkmain,
+          onPressed: () {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: PostingScreen(
+                  selectedclass: selectedclass!,
+                ),
+                // child: ImageFromMinio(),
               ),
-              // child: ImageFromMinio(),
-            ),
-          );
-        },
-        child: const Icon(Icons.add, size: 30),
+            );
+          },
+          child: const Icon(Icons.add, size: 30),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
@@ -438,7 +449,7 @@ class _ClassPostModelState extends State<ClassPostModel> {
   getImage() {
     imagesList = [];
     for (var i = 0; i < widget.eachclasspost.postDetails.length; i++) {
-      // if (widget.eachclasspost.postDetails[i]["type"] == 2) {
+      // if (widget.eachclasspost.postDetails[i]["type".toString()] == "2") {
       print(">>>>>>> $i");
       imagesList.add(
           "$miniohttp/coc/post_images/${widget.eachclasspost.postDetails[i]["content"]}");
@@ -514,7 +525,11 @@ class _ClassPostModelState extends State<ClassPostModel> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PostInside()),
+          MaterialPageRoute(
+            builder: (context) => PostDetailsPage(
+              eachPost: widget.eachclasspost,
+            ),
+          ),
         );
       },
       child: Container(

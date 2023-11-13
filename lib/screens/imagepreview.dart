@@ -296,7 +296,7 @@ class _ImagepreviewScreenState extends State<ImagepreviewScreen> {
                                             child:
                                                 const TeacherDetailScreen()));
                                   },
-                                  child: const Row(
+                                  child:  Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(

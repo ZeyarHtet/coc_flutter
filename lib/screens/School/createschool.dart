@@ -27,7 +27,7 @@ class _CreateSchoolState extends State<CreateSchool> {
   bool submitted = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
       backgroundColor: backcolor,
       appBar: AppBar(
