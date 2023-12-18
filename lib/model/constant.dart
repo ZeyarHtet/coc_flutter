@@ -4,8 +4,9 @@ import 'package:class_on_cloud/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-const domain = "http://192.168.1.4:5050";
-const miniohttp = "http://192.168.1.4:9000";
+const domain = "https://coc-new.onrender.com";
+// const domain = "http://192.168.1.2:5050";
+const miniohttp = "http://192.168.1.2:9000";
 
 var name = "";
 var email = "";

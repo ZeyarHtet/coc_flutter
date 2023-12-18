@@ -7,7 +7,7 @@ import 'package:class_on_cloud/screens/Sign/signup.dart';
 import 'package:class_on_cloud/screens/Classes/class.dart';
 import 'package:class_on_cloud/screens/home.dart';
 import 'package:class_on_cloud/screens/massage.dart';
-import 'package:class_on_cloud/screens/Progress/progress.dart';
+import 'package:class_on_cloud/screens/Assignment/assignment.dart';
 import 'package:class_on_cloud/screens/student.dart';
 import 'package:class_on_cloud/screens/teacherprofile.dart';
 import 'package:flutter/material.dart';
@@ -240,18 +240,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         ),
                       ),
                       MenuStyle(
+                          icon: building,
+                          label: "School",
+                          pagename: widget.pagename,
+                          context: context,
+                          destination: NavbarScreen(
+                            screenindex: 0,
+                          )),
+                      MenuStyle(
                           icon: folder_open_empty,
                           label: "Classes",
                           pagename: widget.pagename,
                           context: context,
                           destination: const ClassesScreen()),
-                      MenuStyle(
-                          icon: building,
-                          label: "School",
-                          pagename: widget.pagename,
-                          context: context,
-                          destination: const SchoolScreen()
-                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                         child: Row(

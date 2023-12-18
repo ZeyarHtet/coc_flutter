@@ -4,7 +4,7 @@ import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/component.dart';
 import 'package:class_on_cloud/model/constant.dart';
 import 'package:class_on_cloud/model/model.dart';
-import 'package:class_on_cloud/screens/Posts/getpost.dart';
+import 'package:class_on_cloud/screens/Posts/post.dart';
 import 'package:class_on_cloud/screens/home.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -25,6 +25,7 @@ class PostingScreen extends StatefulWidget {
 }
 
 class _PostingScreenState extends State<PostingScreen> {
+  DateTime selectedDate = DateTime.now();
   // List<Map<String, dynamic>> postlist = [];
   // List<FocusNode> nodes = [FocusNode()];
   List<Eachpost> postlist = [];
@@ -46,7 +47,19 @@ class _PostingScreenState extends State<PostingScreen> {
 
   final ImagePicker _picker = ImagePicker();
   // List<List<XFile>> galaryimagelist = [];
-  List<File> galaryimg = [];
+  // List<File> galaryimg = [
+  List galaryimg = [
+    {
+      "email": "usertwo@gmail.com",
+      "class_id": "18cd5613-00d7-4cd9-b5d0-7f97576297da",
+      "title": "test add pdf",
+      "type": "1",
+      "due_date": "Null",
+      "post_details": [
+        {"type": 4, "caption": "test pdf", "sort_key": "1"}
+      ]
+    }
+  ];
   Future<void> _selectImage() async {
     var pairone = await _picker.pickMultiImage(
         // source: ImageSource.z
@@ -76,10 +89,12 @@ class _PostingScreenState extends State<PostingScreen> {
     setState(() {});
   }
 
-  void uploadPDF() async {
+   uploadPDF() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true, type: FileType.custom, allowedExtensions: ['pdf']);
-    print(">>>>>>>>>> result $result");
+      allowMultiple: true,
+      type: FileType.any,
+    );
+    print(">>>>>>>>>> pdf result $result");
     XFile file = XFile(result!.files.single.path ?? "");
     print(file.name);
     captiontextcontroller.add(TextEditingController());
@@ -98,38 +113,9 @@ class _PostingScreenState extends State<PostingScreen> {
             });
           },
         ),
-        // widget: Container(
-        //   child: Row(
-        //     children: [
-        //       Container(
-        //         width: 25,
-        //         height: 25,
-        //         margin: const EdgeInsets.all(5),
-        //         child: const Image(
-        //           image: AssetImage('images/pdf.png'),
-        //           color: Colors.black,
-        //         ),
-        //       ),
-        //       Expanded(
-        //         child: Container(
-        //           child: const Text('Hello PDF'),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
-        //  Newfilecontainerwithcaption(
-        //   filepath: file,
-        //   capcontroller: captiontextcontroller.last,
-        //   deletefun: () {
-        //     setState(() {
-        //       postlist.removeWhere((element) => element.id == index);
-        //     });
-        //   },
-        // ),
       ),
     );
+    setState(() {});
   }
 
   // Future<void> newcontroller() async {
@@ -180,14 +166,17 @@ class _PostingScreenState extends State<PostingScreen> {
         id: index,
         value: contentcons.last.text,
         type: 'text',
-        widget: Customtextfield(
-          controller: contentcons.last,
-          hinttext: 'New TextField Here',
-          deletefun: () {
-            setState(() {
-              postlist.removeWhere((element) => element.id == index);
-            });
-          },
+        widget: Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: Customtextfield(
+            controller: contentcons.last,
+            hinttext: 'New TextField Here',
+            deletefun: () {
+              setState(() {
+                postlist.removeWhere((element) => element.id == index);
+              });
+            },
+          ),
         ),
       ),
     );
@@ -213,7 +202,7 @@ class _PostingScreenState extends State<PostingScreen> {
         }
       } else if (finallist[i].type == 'photo') {
         sortkey = sortkey + 1;
-        File imagepath = finallist[i].value;
+        XFile imagepath = finallist[i].value;
         files.add(imagepath);
         valuelist.add({
           "type": 2,
@@ -242,9 +231,8 @@ class _PostingScreenState extends State<PostingScreen> {
         y++;
       }
     }
-
-    print('All value are   >>>>>> $valuelist');
-    print('sortnumber   >>>>>> $sortkey');
+    print(">>>>>>>>>>> final list $finallist");
+    print(">>>>>>>>>>> value list $valuelist");
     if (valuelist.isNotEmpty) {
       Map<String, dynamic> valuestosent = {
         "email": email,
@@ -254,11 +242,9 @@ class _PostingScreenState extends State<PostingScreen> {
         "due_date": isassignment ? duedatecontroller.text.trim() : Null,
         "post_details": valuelist
       };
-      print('Our api result is >>>>>>> # post');
-      print(valuestosent);
-      print(files);
       var result = await createPostApi(valuestosent, files);
-      print('Our api result is >>>>>>> # $result');
+      print(">>>>> ");
+      print(result);
       if (result['returnCode'] == '200') {
         for (var eachcont in contentcons) {
           eachcont.clear();
@@ -269,9 +255,7 @@ class _PostingScreenState extends State<PostingScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => const GetPostScreen(
-                // screenindex: 0,
-                ),
+            builder: (BuildContext context) => const PostScreen(),
           ),
         );
         setState(() {
@@ -372,7 +356,117 @@ class _PostingScreenState extends State<PostingScreen> {
                 // Image.network(
                 //     "http://127.0.0.1:9000/coc/post_images/scaled_IMG_20231012_135913_1697095777499.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=2BEO08X6RLFIGUB1QF10%2F20231012%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231012T080948Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiIyQkVPMDhYNlJMRklHVUIxUUYxMCIsImV4cCI6MTY5NzEzOTE0OSwicGFyZW50IjoibWluaW9hZG1pbiJ9.htWEAko758wYTIGpoljdhpVtNnGKPvAM3WjmF6RDfzj-nQq5uRHWSO_jUU65kv9ofUU_9t53nSggZ-ePN7VpHA&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=1719e4a6443cb9d75099adb1ea84d97fae5b27328cf3961f26b974bdc61e7e43"),
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        Text(
+                          "Assignment: ",
+                          style: labelTextStyle,
+                        ),
+                        Switch(
+                          value: isassignment,
+                          onChanged: (value) {
+                            setState(() {
+                              isassignment = value;
+                            });
+                          },
+                          activeTrackColor: Colors.lightGreenAccent,
+                          activeColor: Colors.green,
+                        ),
+                        isassignment
+                            ? Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        child: Text(
+                                            "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}"),
+                                        onTap: () async {
+                                          final DateTime? dateTime =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: selectedDate,
+                                            firstDate: DateTime(2000),
+                                            lastDate: DateTime(3000),
+                                          );
+                                          if (dateTime != null) {
+                                            setState(() {
+                                              selectedDate = dateTime;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(
+                                height: 10,
+                              ),
+                      ],
+                    ),
+                    // isassignment
+                    //     ? Column(
+                    //         children: [
+                    //           Row(
+                    //             children: [
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(left: 10),
+                    //                 child: Text(
+                    //                   'Due Date',
+                    //                   style: labelTextStyle,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           // Container(
+                    //           //   padding: const EdgeInsets.only(
+                    //           //       right: 15, bottom: 10, left: 15, top: 10),
+                    //           //   child: TextFormField(
+                    //           //     onTap: () {
+                    //           //       setState(() {
+                    //           //         _pickDateDialog();
+                    //           //       });
+                    //           //     },
+                    //           //     controller: duedatecontroller,
+                    //           //     readOnly: true,
+                    //           //     autofocus: false,
+                    //           //     autocorrect: false,
+                    //           //     textCapitalization: TextCapitalization.words,
+                    //           //     autovalidateMode: submitted
+                    //           //         ? AutovalidateMode.always
+                    //           //         : AutovalidateMode.disabled,
+                    //           //     validator: RequiredValidator(
+                    //           //         errorText: "Due Date cannot be blank !"),
+                    //           //     decoration: const InputDecoration(
+                    //           //       contentPadding: EdgeInsets.all(15.0),
+                    //           //       filled: true,
+                    //           //       fillColor: Colors.white,
+                    //           //       // hintText: 'Enter your email address',
+                    //           //       border: OutlineInputBorder(
+                    //           //         borderRadius: BorderRadius.all(
+                    //           //           Radius.circular(10.0),
+                    //           //         ),
+                    //           //         borderSide: BorderSide.none,
+                    //           //       ),
+                    //           //     ),
+                    //           //     // style: labelTextStyle,
+                    //           //     // cursorColor: seccolor,
+                    //           //   ),
+                    //           // ),
+                    //           // const SizedBox(
+                    //           //   height: 10,
+                    //           // ),
+                    //         ],
+                    //       )
+                    //     : const SizedBox(
+                    //         height: 10,
+                    //       ),
                     Padding(
                       padding: const EdgeInsets.only(left: 5),
                       child: TextFormField(
@@ -400,212 +494,192 @@ class _PostingScreenState extends State<PostingScreen> {
                         cursorColor: seccolor,
                       ),
                     ),
-                    Row(
-                      children: [
-                        SizedBox(width: 10),
-                        Text(
-                          "Assignment: ",
-                          style: labelTextStyle,
-                        ),
-                        Switch(
-                          value: isassignment,
-                          onChanged: (value) {
-                            setState(() {
-                              isassignment = value;
-                            });
-                          },
-                          activeTrackColor: Colors.lightGreenAccent,
-                          activeColor: Colors.green,
-                        ),
-                      ],
-                    ),
-                    isassignment
-                        ? Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      'Due Date',
-                                      style: labelTextStyle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(
-                                    right: 15, bottom: 10, left: 15, top: 10),
-                                child: TextFormField(
-                                  onTap: () {
-                                    setState(() {
-                                      _pickDateDialog();
-                                    });
-                                  },
-                                  controller: duedatecontroller,
-                                  readOnly: true,
-                                  autofocus: false,
-                                  autocorrect: false,
-                                  textCapitalization: TextCapitalization.words,
-                                  autovalidateMode: submitted
-                                      ? AutovalidateMode.always
-                                      : AutovalidateMode.disabled,
-                                  validator: RequiredValidator(
-                                      errorText: "Due Date cannot be blank !"),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.all(15.0),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    // hintText: 'Enter your email address',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                  // style: labelTextStyle,
-                                  // cursorColor: seccolor,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                            ],
-                          )
-                        : const SizedBox(
-                            height: 10,
-                          ),
+
                     ...postlist.map((e) {
                       return e.widget;
                     }),
                     // ]),
                   ],
                 ),
-              ],
-            ),
-          ),
-          floatingActionButton: AnimatedContainer(
-            duration: const Duration(milliseconds: 100),
-            width: floatingshow
-                ? MediaQuery.of(context).size.width * 0.7
-                : MediaQuery.of(context).size.width * 0.13,
-            height: MediaQuery.of(context).size.height * 0.07,
-            curve: Curves.ease,
-            decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(15)),
-            child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                reverse: true,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            newtextfield();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: seccolor,
-                              child: const Icon(
-                                Icons.code_rounded,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            uploadPDF();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: seccolor,
-                              child: const Icon(
-                                Icons.insert_drive_file_outlined,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: seccolor,
-                            child: const Icon(
-                              Icons.video_library_outlined,
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            await _selectImage();
-                          },
-                          child: Padding(
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  reverse: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              newtextfield();
+                            },
+                            child: Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: CircleAvatar(
                                 radius: 20,
                                 backgroundColor: seccolor,
                                 child: const Icon(
-                                  Icons.photo_library_outlined,
+                                  Icons.text_fields,
                                   size: 18,
                                 ),
-                              )),
-                        )
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          floatingshow = !floatingshow;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: floatingshow ? seccolor : darkmain,
-                          child: Icon(
-                            floatingshow
-                                ? Icons.arrow_forward_ios
-                                : Icons.add_photo_alternate_outlined,
-                            color: Colors.white,
-                            size: 18,
+                              ),
+                            ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: seccolor,
+                              child: const Icon(
+                                Icons.video_library_outlined,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              await _selectImage();
+                            },
+                            child: Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: seccolor,
+                                  child: const Icon(
+                                    Icons.photo_library_outlined,
+                                    size: 18,
+                                  ),
+                                )),
+                          ),
+                           GestureDetector(
+                            onTap: () async {
+                              await uploadPDF();
+                            },
+                            child: Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: seccolor,
+                                  child: const Icon(
+                                    Icons.file_copy,
+                                    size: 18,
+                                  ),
+                                )),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                )),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+          // floatingActionButton: AnimatedContainer(
+          //   duration: const Duration(milliseconds: 100),
+          //   width: floatingshow
+          //       ? MediaQuery.of(context).size.width * 0.7
+          //       : MediaQuery.of(context).size.width * 0.13,
+          //   height: MediaQuery.of(context).size.height * 0.07,
+          //   curve: Curves.ease,
+          //   decoration: BoxDecoration(
+          //       color: Colors.transparent,
+          //       borderRadius: BorderRadius.circular(15)),
+          //   child: SingleChildScrollView(
+          //       scrollDirection: Axis.horizontal,
+          //       reverse: true,
+          //       child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.end,
+          //         children: [
+          //           Row(
+          //             mainAxisSize: MainAxisSize.min,
+          //             children: [
+          //               GestureDetector(
+          //                 onTap: () {
+          //                   newtextfield();
+          //                 },
+          //                 child: Padding(
+          //                   padding: const EdgeInsets.only(left: 8.0),
+          //                   child: CircleAvatar(
+          //                     radius: 20,
+          //                     backgroundColor: seccolor,
+          //                     child: const Icon(
+          //                       Icons.code_rounded,
+          //                       size: 18,
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ),
+          //               Padding(
+          //                 padding: const EdgeInsets.only(left: 8.0),
+          //                 child: CircleAvatar(
+          //                   radius: 20,
+          //                   backgroundColor: seccolor,
+          //                   child: const Icon(
+          //                     Icons.video_library_outlined,
+          //                     size: 18,
+          //                   ),
+          //                 ),
+          //               ),
+          //               GestureDetector(
+          //                 onTap: () async {
+          //                   await _selectImage();
+          //                 },
+          //                 child: Padding(
+          //                     padding: const EdgeInsets.only(left: 8.0),
+          //                     child: CircleAvatar(
+          //                       radius: 20,
+          //                       backgroundColor: seccolor,
+          //                       child: const Icon(
+          //                         Icons.photo_library_outlined,
+          //                         size: 18,
+          //                       ),
+          //                     )),
+          //               )
+          //             ],
+          //           ),
+          //           GestureDetector(
+          //             onTap: () {
+          //               setState(() {
+          //                 floatingshow = !floatingshow;
+          //               });
+          //             },
+          //             child: Padding(
+          //               padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          //               child: CircleAvatar(
+          //                 radius: 20,
+          //                 backgroundColor: floatingshow ? seccolor : darkmain,
+          //                 child: Icon(
+          //                   floatingshow
+          //                       ? Icons.arrow_forward_ios
+          //                       : Icons.add_photo_alternate_outlined,
+          //                   color: Colors.white,
+          //                   size: 18,
+          //                 ),
+          //               ),
+          //             ),
+          //           )
+          //         ],
+          //       )),
+          // ),
+          // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         ),
       ),
     );
   }
 
-  void _pickDateDialog() async {
-    picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null) {
-      setState(() {
-        // _start_dateController.text = '${picked!.year} - ${picked!.month} ${picked!.day}';
-        duedatecontroller.text = DateFormat('yyyy-MM-dd').format(picked!);
-      });
-    }
-  }
+  // void _pickDateDialog() async {
+  //   picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(1000),
+  //     lastDate: DateTime(2100),
+  //   );
+  //   if (picked != null) {
+  //     setState(() {
+  //       // _start_dateController.text = '${picked!.year} - ${picked!.month} ${picked!.day}';
+  //       duedatecontroller.text = DateFormat('yyyy-MM-dd').format(picked!);
+  //     });
+  //   }
+  // }
 }

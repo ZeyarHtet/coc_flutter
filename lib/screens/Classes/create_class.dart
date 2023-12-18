@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/api.dart';
 import '../../model/constant.dart';
@@ -18,7 +19,9 @@ class CreateClass extends StatefulWidget {
 }
 
 class _CreateClassState extends State<CreateClass> {
+  TextEditingController teacheremailcontroller = TextEditingController();
   TextEditingController classnamecontroller = TextEditingController();
+  TextEditingController subtitlecontroller = TextEditingController();
   TextEditingController descriptioncontroller = TextEditingController();
   // TextEditingController schoolcontroller = TextEditingController();
   TextEditingController customgradecontroller = TextEditingController();
@@ -97,6 +100,49 @@ class _CreateClassState extends State<CreateClass> {
                       Padding(
                         padding: const EdgeInsets.only(left: 15),
                         child: Text(
+                          'Teacher Email',
+                          style: labelTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        right: 15, bottom: 10, left: 15, top: 10),
+                    child: TextFormField(
+                      controller: teacheremailcontroller,
+                      autofocus: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.words,
+                      autovalidateMode: submitted
+                          ? AutovalidateMode.always
+                          : AutovalidateMode.disabled,
+                      validator: RequiredValidator(
+                          errorText: "School email cannot be blank !"),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(15.0),
+                        filled: true,
+                        fillColor: Colors.white,
+                        // hintText: 'Enter your email address',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      // style: labelTextStyle,
+                      // cursorColor: seccolor,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text(
                           'Class Name',
                           style: labelTextStyle,
                         ),
@@ -116,6 +162,49 @@ class _CreateClassState extends State<CreateClass> {
                           : AutovalidateMode.disabled,
                       validator: RequiredValidator(
                           errorText: "Class name cannot be blank !"),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(15.0),
+                        filled: true,
+                        fillColor: Colors.white,
+                        // hintText: 'Enter your email address',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      style: labelTextStyle,
+                      cursorColor: seccolor,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text(
+                          'Subtitle',
+                          style: labelTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        right: 15, bottom: 10, left: 15, top: 10),
+                    child: TextFormField(
+                      controller: subtitlecontroller,
+                      autofocus: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.words,
+                      autovalidateMode: submitted
+                          ? AutovalidateMode.always
+                          : AutovalidateMode.disabled,
+                      validator: RequiredValidator(
+                          errorText: "Subtitle cannot be blank !"),
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(15.0),
                         filled: true,
@@ -179,62 +268,62 @@ class _CreateClassState extends State<CreateClass> {
                   const SizedBox(
                     height: 20,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      _selectImage();
-                      setState(() {});
-                    },
-                    child:
-                        // coverPic != ""
-                        //     ? Container(
-                        //         width: 100,
-                        //         height: 100,
-                        //         child: CachedNetworkImage(
-                        //           imageBuilder: (context, imageProvider) =>
-                        //               Container(
-                        //             decoration: BoxDecoration(
-                        //               border: Border.all(color: Colors.grey),
-                        //               shape: BoxShape.circle,
-                        //               image: DecorationImage(
-                        //                   image: imageProvider,
-                        //                   fit: BoxFit.cover,
-                        //                   colorFilter: ColorFilter.mode(
-                        //                       trandarkmain, BlendMode.colorBurn)),
-                        //             ),
-                        //           ),
-                        //           imageUrl: coverPic,
-                        //           placeholder: (context, url) =>
-                        //               const SpinKitFadingCube(
-                        //             size: 5,
-                        //             color: Colors.grey,
-                        //           ),
-                        //           errorWidget: (context, url, error) =>
-                        //               const Icon(Icons.error),
-                        //         ),
-                        //       )
-                        //     :
-                        Center(
-                      child: _imageList == null
-                          ? const Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                "Select Image",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            )
-                          : Image(
-                              width: 100,
-                              height: 150,
-                              image: FileImage(File(_imageList![0].path)),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     _selectImage();
+                  //     setState(() {});
+                  //   },
+                  //   child:
+                  //       // coverPic != ""
+                  //       //     ? Container(
+                  //       //         width: 100,
+                  //       //         height: 100,
+                  //       //         child: CachedNetworkImage(
+                  //       //           imageBuilder: (context, imageProvider) =>
+                  //       //               Container(
+                  //       //             decoration: BoxDecoration(
+                  //       //               border: Border.all(color: Colors.grey),
+                  //       //               shape: BoxShape.circle,
+                  //       //               image: DecorationImage(
+                  //       //                   image: imageProvider,
+                  //       //                   fit: BoxFit.cover,
+                  //       //                   colorFilter: ColorFilter.mode(
+                  //       //                       trandarkmain, BlendMode.colorBurn)),
+                  //       //             ),
+                  //       //           ),
+                  //       //           imageUrl: coverPic,
+                  //       //           placeholder: (context, url) =>
+                  //       //               const SpinKitFadingCube(
+                  //       //             size: 5,
+                  //       //             color: Colors.grey,
+                  //       //           ),
+                  //       //           errorWidget: (context, url, error) =>
+                  //       //               const Icon(Icons.error),
+                  //       //         ),
+                  //       //       )
+                  //       //     :
+                  //       Center(
+                  //     child: _imageList == null
+                  //         ? const Padding(
+                  //             padding: EdgeInsets.all(10),
+                  //             child: Text(
+                  //               "Select Image",
+                  //               style: TextStyle(
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Colors.black,
+                  //               ),
+                  //             ),
+                  //           )
+                  //         : Image(
+                  //             width: 100,
+                  //             height: 150,
+                  //             image: FileImage(File(_imageList![0].path)),
+                  //           ),
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
                   // Row(
                   //   children: [
                   //     Padding(
@@ -335,60 +424,60 @@ class _CreateClassState extends State<CreateClass> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Text(
-                          'Choose Your Grade',
-                          style: labelTextStyle,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 15),
+                  //       child: Text(
+                  //         'Choose Your Grade',
+                  //         style: labelTextStyle,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   Stack(children: [
                     Column(
                       children: [
                         Container(
-                          padding: const EdgeInsets.only(
-                              right: 15, bottom: 10, left: 15, top: 10),
-                          child: TextFormField(
-                            controller: customgradecontroller,
-                            autofocus: false,
-                            autocorrect: false,
-                            textCapitalization: TextCapitalization.words,
-                            autovalidateMode: submitted
-                                ? AutovalidateMode.always
-                                : AutovalidateMode.disabled,
-                            validator: RequiredValidator(
-                                errorText: "Class name cannot be blank !"),
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15.0),
-                                filled: true,
-                                fillColor: Colors.white,
-                                // hintText: 'Enter your email address',
-                                border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10.0),
-                                  ),
-                                  borderSide: BorderSide.none,
-                                ),
-                                suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        show = !show;
-                                        print('>>>>>> $show');
-                                      });
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: seccolor,
-                                      size: 30,
-                                    ))),
-                            style: labelTextStyle,
-                            cursorColor: seccolor,
-                          ),
-                        ),
+                            // padding: const EdgeInsets.only(
+                            //     right: 15, bottom: 10, left: 15, top: 10),
+                            // child: TextFormField(
+                            //   controller: customgradecontroller,
+                            //   autofocus: false,
+                            //   autocorrect: false,
+                            //   textCapitalization: TextCapitalization.words,
+                            //   autovalidateMode: submitted
+                            //       ? AutovalidateMode.always
+                            //       : AutovalidateMode.disabled,
+                            //   validator: RequiredValidator(
+                            //       errorText: "Class name cannot be blank !"),
+                            //   decoration: InputDecoration(
+                            //       contentPadding: const EdgeInsets.all(15.0),
+                            //       filled: true,
+                            //       fillColor: Colors.white,
+                            //       // hintText: 'Enter your email address',
+                            //       border: const OutlineInputBorder(
+                            //         borderRadius: BorderRadius.all(
+                            //           Radius.circular(10.0),
+                            //         ),
+                            //         borderSide: BorderSide.none,
+                            //       ),
+                            //       suffixIcon: GestureDetector(
+                            //           onTap: () {
+                            //             setState(() {
+                            //               show = !show;
+                            //               print('>>>>>> $show');
+                            //             });
+                            //           },
+                            //           child: Icon(
+                            //             Icons.arrow_drop_down,
+                            //             color: seccolor,
+                            //             size: 30,
+                            //           ))),
+                            //   style: labelTextStyle,
+                            //   cursorColor: seccolor,
+                            // ),
+                            ),
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0),
                           child: SizedBox(
@@ -401,23 +490,35 @@ class _CreateClassState extends State<CreateClass> {
                                 ),
                                 color: darkmain,
                                 onPressed: () async {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  String schoolid = "";
                                   setState(() {
+                                    name = prefs.getString('username')!;
+                                    email = prefs.getString('email')!;
+                                    token = prefs.getString('token')!;
+                                    userid = prefs.getString('userid')!;
+                                    usertype = prefs.getInt('usertype')!;
+                                    profileUrl =
+                                        prefs.getString('profile_pic')!;
+                                    contact = prefs.getString('contact')!;
+                                    phone = prefs.getString('phone')!;
+                                    remark = prefs.getString('remark')!;
+                                    schoolid = prefs.getString('school_id')!;
                                     submitted = true;
-                                  });
-                                  // if (key.currentState!.validate()) {
-                                  print(">>>>>>>>");
-                                  setState(() {
                                     getloading = true;
                                   });
-                                  var returncode = await createclassapi(
-                                    classnamecontroller.text,
-                                    descriptioncontroller.text,
-                                    customgradecontroller.text,
-                                  );
+                                  var body = {
+                                    "school_id": schoolid,
+                                    "email": teacheremailcontroller.text,
+                                    "title": classnamecontroller.text,
+                                    "subtitle": subtitlecontroller.text,
+                                    "description": descriptioncontroller.text,
+                                  };
+                                  print("Create Class body >>>>>>>>>>> $body");
+                                  var returncode = await createclassapi(body);
                                   print('><><ret><> $returncode');
                                   if (returncode == '200') {
-                                    // ignore: use_build_context_synchronously
-                                    // Navigator.pop(context);
                                     // ignore: use_build_context_synchronously
                                     Navigator.push(
                                       context,
@@ -425,17 +526,18 @@ class _CreateClassState extends State<CreateClass> {
                                           builder: (context) =>
                                               const ClassesScreen()),
                                     );
+                                    teacheremailcontroller.clear();
                                     classnamecontroller.clear();
+                                    subtitlecontroller.clear();
                                     descriptioncontroller.clear();
-                                    customgradecontroller.clear();
-                                    // schoolcontroller.clear();
+
+                                    print(
+                                        "<<<<<<<<<<<<<<<object>>>>>>>>>>>>>>>");
                                   }
                                   setState(() {
                                     getloading = false;
                                     submitted = false;
                                   });
-                                  print('>>>>>><<<<<<>>>>>>>');
-                                  // }
                                 },
                                 child: getloading
                                     ? const SpinKitDoubleBounce(

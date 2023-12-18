@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:class_on_cloud/main.dart';
 import 'package:class_on_cloud/model/constant.dart';
 import 'package:class_on_cloud/model/api.dart';
+import 'package:class_on_cloud/screens/School/createschool.dart';
 import 'package:class_on_cloud/screens/Sign/signin.dart';
 import 'package:class_on_cloud/screens/Sign/signin_teacher.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +13,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:class_on_cloud/model/component.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Classes/create_class.dart';
 
 class SingUpFieldScreen extends StatefulWidget {
   int usertype;
@@ -28,7 +32,7 @@ class _SingUpFieldScreenState extends State<SingUpFieldScreen> {
   TextEditingController confirmpasswordcontroller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String usertype = '';
-  int usertypenum = 2;
+  int usertypenum = 1;
   String url = "";
   bool showloading = false;
   bool submitted = false;
@@ -46,28 +50,18 @@ class _SingUpFieldScreenState extends State<SingUpFieldScreen> {
   ]);
 
   getUsertype() {
-    widget.usertype == 2
-        ? usertype = 'Teacher'
-        : widget.usertype == 3
-            ? usertype = 'Student'
-            : usertype = "Family Member";
+    widget.usertype == 1
+        ? usertype = 'School Admin '
+        : widget.usertype == 2
+            ? usertype = 'Teacher'
+            : widget.usertype == 3
+                ? usertype = 'Student'
+                : usertype = "Family Member";
   }
 
   signingUp() async {
     var url = '$domain/api/auth/signup';
     try {
-      // print(
-      //     ' body >>>>> ${emailcontroller.text} >>>>> ${widget.usertype.toInt()}');
-      // await http.post(
-      //   Uri.parse(url),
-      //   headers: {"Content-Type": "application/x-www-form-urlencoded"},
-      //   body: {
-      //     "email": emailcontroller.text,
-      //     "password": passwordcontroller.text,
-      //     "usertype": usertypenum.toString(),
-      //     "username": usernamecontroller.text
-      //   },
-      // )
       var params = {
         "email": emailcontroller.text.trim(),
         "password": passwordcontroller.text,
@@ -87,13 +81,17 @@ class _SingUpFieldScreenState extends State<SingUpFieldScreen> {
         // print(">>>><<<<< ${result['returncode']}");
         if (res.statusCode == 200) {
           if (result['returncode'] == '200') {
-            emailcontroller.clear();
-            passwordcontroller.clear();
-            usernamecontroller.clear();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignInFieldScreen()),
-            );
+            if (widget.usertype == 1) {
+              login();
+            } else {
+              emailcontroller.clear();
+              passwordcontroller.clear();
+              usernamecontroller.clear();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignInFieldScreen()),
+              );
+            }
           } else {
             showToast(result['message'], 'red');
           }
@@ -108,6 +106,94 @@ class _SingUpFieldScreenState extends State<SingUpFieldScreen> {
     setState(() {
       showloading = false;
     });
+  }
+
+  login() async {
+    url = "$domain/api/auth/signin";
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      var params = {
+        "email": emailcontroller.text.trim(),
+        "password": passwordcontroller.text,
+      };
+      await dio
+          .post(
+        url,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        }),
+        data: jsonEncode(params),
+      )
+          .then((res) async {
+        var result = res.data;
+        if (res.statusCode == 200) {
+          if (result["returncode"] == "200") {
+            setState(() {
+              submitted = false;
+            });
+            await prefs.setBool('Signedin', true);
+            await prefs.setString("token", result['token']);
+            await prefs.setString('userid', result['data']['userid']);
+            await prefs.setInt('usertype', result['data']['usertype']);
+            await prefs.setString('username', result['data']['username']);
+            await prefs.setString('email', result['data']['email']);
+            result['data']['profile_pic'] != null
+                ? await prefs.setString(
+                    'profile_pic', result['data']['profile_pic'])
+                : await prefs.setString('profile_pic', '');
+            result['data']['contact'] != null
+                ? await prefs.setString('contact', result['data']['contact'])
+                : await prefs.setString('contact', '');
+            result['data']['phone'] != null
+                ? await prefs.setString('phone', result['data']['phone'])
+                : await prefs.setString('phone', '');
+            result['data']['remark'] != null
+                ? await prefs.setString('remark', result['data']['remark'])
+                : await prefs.setString('remark', '');
+
+            // emailcontroller.clear();
+            // passwordcontroller.clear();
+            emailcontroller.clear();
+            passwordcontroller.clear();
+            usernamecontroller.clear();
+            if (widget.usertype == 1) {
+              // ignore: use_build_context_synchronously
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateSchool(),
+                ),
+              );
+            } else if (widget.usertype == 2) {
+              // ignore: use_build_context_synchronously
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateClass(),
+                ),
+              );
+            }
+          } else {
+            showToast(result['message'], 'red');
+          }
+
+          setState(() {
+            showloading = false;
+          });
+        } else {
+          showToast(res.statusCode, "red");
+          setState(() {
+            showloading = false;
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      showToast("Error >>>>> $e", "red");
+      setState(() {
+        showloading = false;
+      });
+    }
   }
 
   @override
@@ -416,40 +502,41 @@ class _SingUpFieldScreenState extends State<SingUpFieldScreen> {
                         height: 20,
                       ),
                       SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.06,
-                          child: MaterialButton(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            color: darkmain,
-                            // textColor: Colors.white,
-                            onPressed: () async {
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: MaterialButton(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          color: darkmain,
+                          // textColor: Colors.white,
+                          onPressed: () async {
+                            setState(() {
+                              submitted = true;
+                            });
+                            if (_formKey.currentState!.validate()) {
                               setState(() {
-                                submitted = true;
+                                showloading = true;
                               });
-                              if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  showloading = true;
-                                });
-                                signingUp();
-                                FocusScope.of(context).unfocus();
-                                setState(() {
-                                  showloading = false;
-                                });
-                              }
-                            },
-                            child: showloading
-                                ? const SpinKitWave(
-                                    color: Colors.white,
-                                    size: 15.0,
-                                  )
-                                : Text(
-                                    'Create',
-                                    style: buttonTextStyle,
-                                  ),
-                          )),
+                              signingUp();
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                showloading = false;
+                              });
+                            }
+                          },
+                          child: showloading
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 15.0,
+                                )
+                              : Text(
+                                  'Create',
+                                  style: buttonTextStyle,
+                                ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 12),

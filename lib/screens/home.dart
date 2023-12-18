@@ -3,11 +3,16 @@ import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/component.dart';
 import 'package:class_on_cloud/model/model.dart';
 import 'package:class_on_cloud/screens/Classes/class.dart';
+import 'package:class_on_cloud/screens/Posts/createpost.dart';
+import 'package:class_on_cloud/screens/Posts/tabs.dart';
+import 'package:class_on_cloud/screens/School/createschool.dart';
+import 'package:class_on_cloud/screens/School/school.dart';
+import 'package:class_on_cloud/screens/createpost.dart';
 import 'package:class_on_cloud/screens/drawer.dart';
-import 'package:class_on_cloud/screens/Posts/getpost.dart';
+import 'package:class_on_cloud/screens/Posts/post.dart';
 import 'package:class_on_cloud/screens/journal.dart';
 import 'package:class_on_cloud/screens/massage.dart';
-import 'package:class_on_cloud/screens/Progress/progress.dart';
+import 'package:class_on_cloud/screens/Assignment/assignment.dart';
 import 'package:class_on_cloud/screens/student.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -102,109 +107,58 @@ class _NavbarScreenState extends State<NavbarScreen> {
 
   bool searchBoolean = false;
   List<Widget> screens = [
-    // JournelScreen(),
-    ClassesScreen(),
-    MessageScreen(),
-    StudentScreen(),
-    ProgressScreen()
+    // const TabsPage(),
+    const SchoolScreen(),
+    const MessageScreen(),
+    const StudentScreen(),
+    const AssignmentScreen()
   ];
   List<GButton> tablist = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   centerTitle: true,
-      //   backgroundColor: darkmain,
-      //   iconTheme: IconThemeData(
-      //     color: maincolor,
-      //     size: 30,
-      //   ),
-      //   automaticallyImplyLeading: searchBoolean ? false : true,
-      //   title: searchBoolean
-      //       ? searchTextField()
-      //       : selectedclass == null
-      //           ? Text("Home", style: appBarTitleTextStyle)
-      //           : Text(
-      //               selectedclass!.title,
-      //               style: appBarTitleTextStyle,
-      //             ),
-      //   actions: searchBoolean
-      //       ? [
-      //           IconButton(
-      //               splashRadius: 3,
-      //               icon: const Icon(
-      //                 Icons.clear,
-      //                 size: 30,
-      //               ),
-      //               onPressed: () {
-      //                 setState(() {
-      //                   searchBoolean = false;
-      //                 });
-      //               })
-      //         ]
-      //       : [
-      //           IconButton(
-      //               splashRadius: 3,
-      //               icon: const Icon(
-      //                 Icons.search,
-      //                 size: 30,
-      //               ),
-      //               onPressed: () {
-      //                 setState(() {
-      //                   searchBoolean = true;
-      //                 });
-      //               })
-      //         ],
-      // ),
-      // drawer: searchBoolean
-      //     ? null
-      //     : SizedBox(
-      //         width: MediaQuery.of(context).size.width * 0.8,
-      //         child: DrawerScreen(
-      //           pagename: 'Home',
-      //         )),
       body: screens[widget.screenindex],
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-        child: GNav(
-            tabBorderRadius: 30,
-            onTabChange: (value) {
-              setState(() {
-                widget.screenindex = value;
-              });
-            },
-            selectedIndex: widget.screenindex,
-            // curve: Curves.ease,
-            gap: 10,
-            color: Colors.black,
-            activeColor: darkmain,
-            iconSize: 22,
-            tabBackgroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            tabs: const [
-              GButton(
-                icon: home_outline,
-                text: 'Home',
-              ),
-              GButton(
-                icon: comment,
-                text: 'Message',
-              ),
-              GButton(
-                icon: people_outline,
-                text: 'Students',
-              ),
-              GButton(
-                icon: chart_pie_outline,
-                text: 'Progress',
-              )
-            ]),
-      ),
+      // bottomNavigationBar: Container(
+      //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+      //   decoration: const BoxDecoration(
+      //     color: Colors.white,
+      //   ),
+      //   child: GNav(
+      //     tabBorderRadius: 30,
+      //     onTabChange: (value) {
+      //       setState(() {
+      //         widget.screenindex = value;
+      //       });
+      //     },
+      //     selectedIndex: widget.screenindex,
+      //     // curve: Curves.ease,
+      //     gap: 10,
+      //     color: Colors.black,
+      //     activeColor: darkmain,
+      //     iconSize: 22,
+      //     tabBackgroundColor: Colors.white,
+      //     padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      //     tabs: const [
+      //       // GButton(
+      //       //   icon: home_outline,
+      //       //   text: 'Home',
+      //       // ),
+      //       // GButton(
+      //       //   icon: comment,
+      //       //   text: 'Message',
+      //       // ),
+      //       // GButton(
+      //       //   icon: people_outline,
+      //       //   text: 'Students',
+      //       // ),
+      //       // GButton(
+      //       //   icon: chart_pie_outline,
+      //       //   text: 'Progress',
+      //       // )
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

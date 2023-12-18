@@ -411,6 +411,7 @@ class _EditSchoolState extends State<EditSchool> {
                               // Navigator.pop(context);
                               // ignore: use_build_context_synchronously
                               print("<<<<<<<<<<<<<<<object1>>>>>>>>>>>>>>>");
+                              // ignore: use_build_context_synchronously
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

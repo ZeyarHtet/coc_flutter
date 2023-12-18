@@ -11,7 +11,7 @@ import '../../model/component.dart';
 import '../../model/constant.dart';
 import '../../model/model.dart';
 import '../home.dart';
-import 'getpost.dart';
+import 'post.dart';
 
 class EditPost extends StatefulWidget {
   classlistmodel selectedclass;
@@ -150,7 +150,7 @@ class _EditPostState extends State<EditPost> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const GetPostScreen()),
+                        builder: (context) => const PostScreen()),
                   );
                   titletextcontroller.clear();
                   duedatecontroller.clear;

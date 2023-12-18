@@ -4,8 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:class_on_cloud/model/constant.dart';
 import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/model.dart';
+import 'package:class_on_cloud/screens/Classes/class_details.dart';
 import 'package:class_on_cloud/screens/Classes/create_class.dart';
-import 'package:class_on_cloud/screens/Posts/getpost.dart';
+import 'package:class_on_cloud/screens/Posts/post.dart';
+import 'package:class_on_cloud/screens/Posts/tabs.dart';
 import 'package:class_on_cloud/screens/classposting.dart';
 import 'package:class_on_cloud/screens/drawer.dart';
 import 'package:class_on_cloud/screens/Classes/edit_class.dart';
@@ -438,8 +440,9 @@ class _ClassModelState extends State<ClassModel> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // print(">>><><>>>>>> ${widget.eachclass.classId}");
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('class_id', widget.eachclass.classId);
+        // ignore: use_build_context_synchronously
         showLoadingDialog(context, 'Preparing Your class');
         var apiresult = await getsingleclassapi(widget.eachclass.classId);
         List students = apiresult['student'];
@@ -454,14 +457,12 @@ class _ClassModelState extends State<ClassModel> {
         print(">>><><number of student>>>>>> ${studentlist.length}");
         String selectedencode = classlistmodel.sigleencode(widget.eachclass);
         await prefs.setString("selectedClass", selectedencode);
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) => const GetPostScreen(
-                    // screenindex: 0,
-                  )),
+          MaterialPageRoute(builder: (context) => const TabsPage()),
         );
       },
       child: Column(

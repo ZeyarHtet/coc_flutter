@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:class_on_cloud/model/api.dart';
+import 'package:class_on_cloud/screens/Classes/class.dart';
+import 'package:class_on_cloud/screens/Classes/create_class.dart';
 import 'package:class_on_cloud/screens/School/createschool.dart';
 import 'package:class_on_cloud/screens/School/edit_school.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
   late var result;
 
   getschool() async {
+    print(">>>>>>>>>>>>");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     result = await getschoolapi();
     print('>>>>>>>>>>>>>>>>>>>>>>$result');
@@ -57,7 +60,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
           // print(">>>>>>>> ${myclass[0].coverpic}");
         }
 
-        String encodedschool = schoollistmodel.encode   (myschool);
+        String encodedschool = schoollistmodel.encode(myschool);
         await prefs.setString('schoolList', encodedschool);
       }
     }
@@ -141,7 +144,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
           ? myschool.isEmpty
               ? Center(
                   child: Text(
-                    "You don't have any class yet!",
+                    "You don't have any school yet!",
                     style: inputTextStyle,
                   ),
                 )
@@ -190,7 +193,6 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                           );
                                         });
                                       },
-                                    
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -335,7 +337,6 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                           },
                                         );
                                       },
-                                     
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -408,51 +409,63 @@ class SchoolModel extends StatefulWidget {
 
 class _SchoolModelState extends State<SchoolModel> {
   List<studentlistinClass> studentlist = [];
+  String schoolid = "";
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.1,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(color: backcolor),
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                  backgroundColor: paledarkmain,
-                  radius: 25,
-                  child: Text(
-                    widget.eachschool.schoolName[0].toUpperCase(),
-                    style: buttonTextStyle,
-                  )),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('${widget.eachschool.schoolName.characters.take(36)}',
-                      style: firstTextstyle),
-                  Text(
-                    widget.eachschool.startDate,
-                    style: secondTextstyle(Colors.grey[600]),
-                  ),
-                ],
-              ),
-            ],
+    return GestureDetector(
+      onTap: () async {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('school_id', widget.eachschool.schoolId);
+        setState(() {});
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ClassesScreen()),
+        );
+      },
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.1,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(color: backcolor),
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                    backgroundColor: paledarkmain,
+                    radius: 25,
+                    child: Text(
+                      widget.eachschool.schoolName[0].toUpperCase(),
+                      style: buttonTextStyle,
+                    )),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('${widget.eachschool.schoolName.characters.take(36)}',
+                        style: firstTextstyle),
+                    Text(
+                      widget.eachschool.startDate,
+                      style: secondTextstyle(Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        Divider(
-          color: Colors.grey[300],
-          thickness: 1,
-          height: 1.1,
-        )
-      ],
+          Divider(
+            color: Colors.grey[300],
+            thickness: 1,
+            height: 1.1,
+          )
+        ],
+      ),
     );
   }
 }

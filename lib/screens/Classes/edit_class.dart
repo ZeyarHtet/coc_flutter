@@ -23,7 +23,6 @@ class EditClass extends StatefulWidget {
     super.key,
     required this.editData,
   });
-
   @override
   State<EditClass> createState() => _EditClassState();
 }
@@ -295,16 +294,17 @@ class _EditClassState extends State<EditClass> {
                           //     :
                           Center(
                         child: _imageList == null
-                            ? const Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  "Select Image",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              )
+                        ? Container()
+                            // ? const Padding(
+                            //     padding: EdgeInsets.all(10),
+                            //     child: Text(
+                            //       "Select Image",
+                            //       style: TextStyle(
+                            //         fontWeight: FontWeight.bold,
+                            //         color: Colors.black,
+                            //       ),
+                            //     ),
+                            //   )
                             : Image(
                                 width: 100,
                                 height: 150,

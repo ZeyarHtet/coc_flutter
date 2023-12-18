@@ -65,6 +65,67 @@ class _SignupScreenState extends State<SignupScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SingUpFieldScreen(
+                                          usertype: 1,
+                                        )),
+                              );
+                            },
+                            child: Card(
+                              elevation: 0,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    left: 5.0, right: 5.0, bottom: 8, top: 8),
+                                child: ListTile(
+                                  leading: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: darkmain,
+                                        child: const Image(
+                                          height: 25,
+                                          width: 25,
+                                          image: AssetImage(
+                                              'images/schooladmin.jpg'),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  trailing: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: darkmain,
+                                      )
+                                    ],
+                                  ),
+                                  title: SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    child: Text(
+                                      'School Admin',
+                                      style: TextStyle(
+                                        fontSize: ScreenUtil().setSp(15),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SingUpFieldScreen(
                                           usertype: 2,
                                         )),
                               );
@@ -83,13 +144,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
-                                          backgroundColor: darkmain,
-                                          child: const Image(
-                                            height: 25,
-                                            width: 25,
-                                            image: AssetImage(
-                                                'images/teacher.png'),
-                                          ))
+                                        backgroundColor: darkmain,
+                                        child: const Image(
+                                          height: 25,
+                                          width: 25,
+                                          image:
+                                              AssetImage('images/teacher.png'),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   trailing: Column(

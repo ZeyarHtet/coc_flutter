@@ -1,38 +1,31 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:class_on_cloud/model/api.dart';
 import 'package:class_on_cloud/model/model.dart';
-import 'package:class_on_cloud/screens/Classes/edit_class.dart';
 import 'package:class_on_cloud/screens/Posts/edit_post.dart';
-import 'package:class_on_cloud/screens/Posts/minioimagetest.dart';
 import 'package:class_on_cloud/screens/Posts/postdetails.dart';
-import 'package:class_on_cloud/screens/classposting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../model/component.dart';
 import '../../model/constant.dart';
 import '../drawer.dart';
 import 'createpost.dart';
 
-class GetPostScreen extends StatefulWidget {
-  const GetPostScreen({super.key});
+class PostScreen extends StatefulWidget {
+  const PostScreen({super.key});
 
   @override
-  State<GetPostScreen> createState() => _GetPostScreenState();
+  State<PostScreen> createState() => _PostScreenState();
 }
 
-class _GetPostScreenState extends State<GetPostScreen> {
+class _PostScreenState extends State<PostScreen> {
   bool searchBoolean = false;
   List<classpostlistmodel> myclasspost = [];
   classpostlistmodel? selectedclasspost;
-  late var result;
   bool ready = false;
   classlistmodel? selectedclass;
 
@@ -42,7 +35,7 @@ class _GetPostScreenState extends State<GetPostScreen> {
     mineclass == null
         ? selectedclass = null
         : selectedclass = classlistmodel.singledecode(mineclass);
-    result = await getclasspostapi();
+    var result = await getclasspostapi(selectedclass!.classId);
     print('>>>>>>>>>>>>>>>>>>>>>>$result');
     if (result['returnCode'] == '300') {
       setState(() {
@@ -50,7 +43,6 @@ class _GetPostScreenState extends State<GetPostScreen> {
       });
     } else if (result['returnCode'] == '200') {
       List classpostList = result['posts'];
-      print('>>>>>>>>>>>>>>> classpostlist$classpostList');
       if (classpostList.isNotEmpty) {
         for (var i = 0; i < classpostList.length; i++) {
           myclasspost.add(
@@ -61,7 +53,7 @@ class _GetPostScreenState extends State<GetPostScreen> {
               type: classpostList[i]['type'] == null
                   ? ""
                   : classpostList[i]['type'].toString(),
-              duedate: classpostList[i]['due_date'],
+              duedate: classpostList[i]['due_date'] ?? "",
               postDetails: classpostList[i]["post_details"],
             ),
           );
@@ -84,7 +76,7 @@ class _GetPostScreenState extends State<GetPostScreen> {
 
   delectedclasspost(String postid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    result = await deleteclasspostapi(postid);
+    var result = await deleteclasspostapi(postid);
 
     print('>><><><>< before>>${myclasspost.length}');
     if (postid == selectedclasspost?.postId) {
@@ -103,9 +95,10 @@ class _GetPostScreenState extends State<GetPostScreen> {
     if (result['returnCode'] == '200') {
       Navigator.pop(context);
       showToast('successfully deleted', 'darkmain');
+      // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const GetPostScreen()),
+          MaterialPageRoute(builder: (context) => const PostScreen()),
           (route) => false);
     } else {
       Navigator.pop(context);
@@ -428,17 +421,15 @@ class _GetPostScreenState extends State<GetPostScreen> {
 }
 
 class ClassPostModel extends StatefulWidget {
-  classpostlistmodel eachclasspost;
-  // String classname;
-  ClassPostModel({super.key, required this.eachclasspost});
+  final classpostlistmodel eachclasspost;
+
+  const ClassPostModel({super.key, required this.eachclasspost});
 
   @override
   State<ClassPostModel> createState() => _ClassPostModelState();
 }
 
 class _ClassPostModelState extends State<ClassPostModel> {
-  // List<studentlistinClass> studentlist = [];
-
   @override
   void initState() {
     getImage();
@@ -465,7 +456,7 @@ class _ClassPostModelState extends State<ClassPostModel> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () async {},
       child: Column(
         children: [
           Padding(
@@ -476,14 +467,11 @@ class _ClassPostModelState extends State<ClassPostModel> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                      backgroundColor: paledarkmain,
-                      radius: 23,
-                      child: Text(
-                        widget.eachclasspost.title == ""
-                            ? ""
-                            : widget.eachclasspost.title[0].toUpperCase(),
-                        // "",
-                        style: buttonTextStyle,
+                      backgroundColor: darkmain,
+                      child: const Image(
+                        height: 25,
+                        width: 25,
+                        image: AssetImage('images/teacher.png'),
                       ),
                     ),
                     const SizedBox(
@@ -491,22 +479,41 @@ class _ClassPostModelState extends State<ClassPostModel> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const Text("Teacher"),
                         Text(
-                          '${widget.eachclasspost.title.characters.take(36)}',
-                          style: firstTextstyle,
-                        ),
-                        Text(
-                          DateFormat("dd-MM-yyyy").format(
-                              DateTime.parse(widget.eachclasspost.duedate)),
+                          widget.eachclasspost.duedate,
                           style: secondTextstyle(Colors.grey[600]),
                         ),
                       ],
                     ),
                   ],
                 ),
-                imagesList.isNotEmpty ? _buildListItemPostImage() : Container(),
+                const SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${widget.eachclasspost.title.characters.take(36)}',
+                        style: firstTextstyle,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  child: imagesList.isNotEmpty
+                      ? _buildListItemPostImage()
+                      : Container(),
+                ),
               ],
             ),
           ),

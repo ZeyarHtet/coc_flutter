@@ -403,3 +403,102 @@ class PostDetail {
         "post_id": postId,
       };
 }
+
+class classassignmentlistmodel {
+  String assignmentId;
+  String postid;
+  String title;
+  String duedate;
+
+  classassignmentlistmodel({
+    required this.assignmentId,
+    required this.postid,
+    required this.title,
+    required this.duedate,
+  });
+
+  factory classassignmentlistmodel.fromJson(Map<String, dynamic> jsonData) {
+    return classassignmentlistmodel(
+      assignmentId: jsonData['assignment_id'],
+      postid: jsonData['post_id'],
+      title: jsonData['post_title'],
+      duedate: jsonData['due_date'],
+    );
+  }
+
+  static Map<String, dynamic> toMap(classassignmentlistmodel classassignment) =>
+      {
+        "assignment_id": classassignment.assignmentId,
+        "post_id": classassignment.postid,
+        "post_title": classassignment.title,
+        'due_date': classassignment.duedate
+      };
+
+  static String encode(List<classassignmentlistmodel> classes) => json.encode(
+        classes
+            .map<Map<String, dynamic>>(
+                (eachclass) => classassignmentlistmodel.toMap(eachclass))
+            .toList(),
+      );
+
+  static List<classassignmentlistmodel> decode(String classes) =>
+      (json.decode(classes) as List<dynamic>)
+          .map<classassignmentlistmodel>(
+              (eachclass) => classassignmentlistmodel.fromJson(eachclass))
+          .toList();
+
+  static String sigleencode(classassignmentlistmodel single) =>
+      json.encode(classassignmentlistmodel.toMap(single));
+  static classassignmentlistmodel singledecode(dynamic single) =>
+      classassignmentlistmodel.fromJson(json.decode(single));
+}
+
+
+
+class assignmentlistmodel {
+  String postId;
+  String classId;
+  String title;
+  String duedate;
+
+  assignmentlistmodel({
+    required this.postId,
+    required this.classId,
+    required this.title,
+    required this.duedate,
+  });
+
+  factory assignmentlistmodel.fromJson(Map<String, dynamic> jsonData) {
+    return assignmentlistmodel(
+      postId: jsonData['post_id'],
+      classId: jsonData['class_id'],
+      title: jsonData['title'],
+      duedate: jsonData['due_date'],
+    );
+  }
+
+  static Map<String, dynamic> toMap(assignmentlistmodel assignment) => {
+        "post_id": assignment.postId,
+        "class_id": assignment.classId,
+        "title": assignment.title,
+        "due_date": assignment.duedate,
+      };
+
+  static String encode(List<assignmentlistmodel> classes) => json.encode(
+        classes
+            .map<Map<String, dynamic>>(
+                (eachclass) => assignmentlistmodel.toMap(eachclass))
+            .toList(),
+      );
+
+  static List<assignmentlistmodel> decode(String classes) =>
+      (json.decode(classes) as List<dynamic>)
+          .map<assignmentlistmodel>(
+              (eachclass) => assignmentlistmodel.fromJson(eachclass))
+          .toList();
+
+  static String sigleencode(assignmentlistmodel single) =>
+      json.encode(assignmentlistmodel.toMap(single));
+  static assignmentlistmodel singledecode(dynamic single) =>
+      assignmentlistmodel.fromJson(json.decode(single));
+}
